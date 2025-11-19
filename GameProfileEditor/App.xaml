@@ -1,0 +1,18 @@
+﻿<Application x:Class="GameProfileEditor.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:c="clr-namespace:Mi5hmasH.Utilities.Converters;assembly=Mi5hmasH.WpfHelper"
+             StartupUri="/Views/Windows/MainWindow.xaml">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!-- Load Fluent.xaml -->
+                <ResourceDictionary Source="pack://application:,,,/PresentationFramework.Fluent;component/Themes/Fluent.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <!-- Converters -->
+            <c:Base64ToImageConverter x:Key="Base64ToImageConverter" />
+            <!-- Fonts -->
+            <FontFamily x:Key="IconFont">pack://application:,,,/Fonts/#IconFont</FontFamily>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

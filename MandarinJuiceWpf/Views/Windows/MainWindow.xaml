@@ -1,0 +1,279 @@
+﻿<Window x:Class="MandarinJuiceWpf.Views.Windows.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:cc="clr-namespace:MandarinJuiceWpf.CustomControls"
+        xmlns:w="clr-namespace:MandarinJuiceWpf.Views.Windows"
+        xmlns:p="clr-namespace:Mi5hmasH.WpfHelper.ControlProperties;assembly=Mi5hmasH.WpfHelper"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance w:MainWindow, IsDesignTimeCreatable=False}"
+        d:Title="AppTitle"
+        Title="{Binding ViewModel.AppTitle, Mode=OneWay}"
+        d:DesignHeight="330"
+        Height="330" 
+        d:DesignWidth="700"
+        Width="700"
+        ResizeMode="CanMinimize">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <!-- Page Content -->
+        <Grid Margin="5,10,10,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="5" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <!-- Left Side -->
+            <StackPanel>
+                <!-- Game Profile -->
+                <StackPanel Margin="5,0,5,10">
+                    <Label Content="Game Profile" />
+                    <Grid
+                    p:DropProperties.DropOperationType="GetInputPath"
+                    AllowDrop="True"
+                    Drop="FileDrop_Drop"
+                    PreviewDragEnter="FileDrop_PreviewDragEnter"
+                    PreviewDragOver="FileDrop_PreviewDragOver">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <ComboBox 
+                        MaxDropDownHeight="200" 
+                        ItemsSource="{Binding ViewModel.GameProfileFiles}" 
+                        SelectedItem="{Binding ViewModel.SelectedGameProfileFile, Mode=TwoWay}"
+                        IsEnabled="{Binding ViewModel.IsBusy, Converter={StaticResource InverseBooleanConverter}}">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Converter={StaticResource FileNameWithoutExtensionConverter}}" />
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                        <Button
+                        Grid.Column="1"
+                        FontFamily="{StaticResource IconFont}"
+                        d:Content="X"
+                        Content="{Binding ViewModel.FolderSymlinkIcon}"
+                        ToolTip="Open the Profiles Directory"
+                        Command="{Binding ViewModel.OpenProfilesDirectoryCommand}"
+                        Margin="10,0,0,0" 
+                        Height="{Binding ElementName=InputFolderTextBox, Path=ActualHeight}" />
+                    </Grid>
+                </StackPanel>
+                <!-- Input Folder Path -->
+                <StackPanel Margin="5,0,5,10">
+                    <Label Content="Input Folder Path" />
+                    <Grid
+                    p:DropProperties.DropOperationType="GetInputPath"
+                    AllowDrop="True"
+                    Drop="FileDrop_Drop"
+                    PreviewDragEnter="FileDrop_PreviewDragEnter"
+                    PreviewDragOver="FileDrop_PreviewDragOver"
+                    IsEnabled="{Binding ViewModel.IsBusy, Converter={StaticResource InverseBooleanConverter}}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBox x:Name="InputFolderTextBox" FontSize="13" Text="{Binding ViewModel.InputFolderPath, UpdateSourceTrigger=LostFocus, Mode=TwoWay}" ToolTip="Enter a valid path to an existing directory." />
+                        <Button
+                        Grid.Column="1"
+                        FontFamily="{StaticResource IconFont}"
+                        d:Content="X"
+                        Content="{Binding ViewModel.FolderIcon}"
+                        ToolTip="Open the File Selector"
+                        Command="{Binding ViewModel.SelectInputFolderPathCommand}"
+                        Margin="10,0,0,0" 
+                        Height="{Binding ElementName=InputFolderTextBox, Path=ActualHeight}" />
+                    </Grid>
+                </StackPanel>
+                <!-- UserId -->
+                <Grid Margin="5,0,5,10"
+                  IsEnabled="{Binding ViewModel.IsBusy, Converter={StaticResource InverseBooleanConverter}}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <!-- Left -->
+                    <StackPanel>
+                        <TextBlock Margin="0,0,0,5">
+                        <Run Text="User ID" />
+                        <Bold>
+                            <Run Text="(INPUT)" />
+                        </Bold>
+                        </TextBlock>
+                        <TextBox x:Name="UserIdInputTextBox" Text="{Binding ViewModel.UserIdInput, UpdateSourceTrigger=LostFocus, Mode=TwoWay}" />
+                    </StackPanel>
+                    <!-- Interchange -->
+                    <Button
+                    Grid.Column="1"
+                    FontFamily="{StaticResource IconFont}"
+                    d:Content="X"
+                    Content="{Binding ViewModel.InterchangeIcon}"
+                    ToolTip="Interchange"
+                    Command="{Binding ViewModel.SwapUserIdsCommand}"
+                    Margin="10,0"
+                    VerticalAlignment="Bottom" 
+                    Height="{Binding ElementName=UserIdInputTextBox, Path=ActualHeight}" />
+                    <!-- Right -->
+                    <StackPanel Grid.Column="2">
+                        <TextBlock Margin="0,0,0,5">
+                        <Run Text="User ID" />
+                        <Bold>
+                            <Run Text="(OUTPUT)" />
+                        </Bold>
+                        </TextBlock>
+                        <TextBox Text="{Binding ViewModel.UserIdOutput, UpdateSourceTrigger=LostFocus, Mode=TwoWay}" />
+                    </StackPanel>
+                </Grid>
+                <!-- Action Buttons -->
+                <Grid Margin="5,10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Orientation="Horizontal" 
+                            Visibility="{Binding ViewModel.SuperUserManager.IsSuperUser, Converter={StaticResource BooleanToVisibilityConverter}}"
+                            IsEnabled="{Binding ViewModel.IsBusy, Converter={StaticResource InverseBooleanConverter}}">
+                        <Button Command="{Binding ViewModel.DecryptAllCommand}">
+                            <TextBlock>
+                            <Run FontFamily="{StaticResource IconFont}" Text="{Binding ViewModel.DecryptIcon, Mode=OneWay}"/>
+                            <Run Text="Decrypt All"/>
+                            </TextBlock>
+                        </Button>
+                        <Button Margin="10,0" Command="{Binding ViewModel.EncryptAllCommand}">
+                            <TextBlock>
+                            <Run FontFamily="{StaticResource IconFont}" Text="{Binding ViewModel.EncryptIcon, Mode=OneWay}"/>
+                            <Run Text="Encrypt All"/>
+                            </TextBlock>
+                        </Button>
+                    </StackPanel>
+                    <Button
+                    Grid.Column="1"
+                    Margin="10,0"
+                    Style="{DynamicResource AccentButtonStyle}"
+                    Command="{Binding ViewModel.AbortActionCommand}"
+                    Visibility="{Binding ViewModel.IsAbortAllowed, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <TextBlock>
+                        <Run FontFamily="{StaticResource IconFont}" Text="{Binding ViewModel.XCircleIcon, Mode=OneWay}"/>
+                        <Run Text="Abort"/>
+                        </TextBlock>
+                    </Button>
+                    <StackPanel Grid.Column="2" Orientation="Horizontal">
+                        <Button x:Name="ResignAllButton" Command="{Binding ViewModel.ResignAllCommand}"
+                            IsEnabled="{Binding ViewModel.IsBusy, Converter={StaticResource InverseBooleanConverter}}">
+                            <TextBlock>
+                            <Run FontFamily="{StaticResource IconFont}" Text="{Binding ViewModel.ResignIcon, Mode=OneWay}"/>
+                            <Run Text="Re-sign All"/>
+                            </TextBlock>
+                        </Button>
+                        <Button
+                        FontFamily="{StaticResource IconFont}"
+                        d:Content="X"
+                        Content="{Binding ViewModel.FolderSymlinkIcon}"
+                        ToolTip="Open the Output Directory"
+                        Command="{Binding ViewModel.OpenOutputDirectoryCommand}"
+                        Margin="10,0,0,0" 
+                        Height="{Binding ElementName=ResignAllButton, Path=ActualHeight}" />
+                    </StackPanel>
+                </Grid>
+            </StackPanel>
+            <!-- Right Side -->
+            <Grid Grid.Column="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="5*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Image 
+                    Grid.Row="0"
+                    Source="pack://application:,,,/Resources/Images/AppLogo.png"
+                    UseLayoutRounding="True"
+                    RenderOptions.BitmapScalingMode="HighQuality"
+                    SnapsToDevicePixels="True" />
+                <cc:EclipseImageControl Grid.Row="0"
+                                        VerticalAlignment="Bottom" 
+                                        HorizontalAlignment="Left"
+                                        Margin="0,0,0,-20"
+                                        ImageToolTip="{Binding ViewModel.GameProfileAppId}"
+                                        Base64InnerImage="{Binding ViewModel.GameProfileManager.GameProfile.Base64GpIcon}"
+                                        InnerClickCommand="{Binding ViewModel.VisitStoreProductPageCommand}"
+                                        d:HideWhenEmpty="False"/>
+                <Grid Grid.Row="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                        <Label
+                        Padding="0"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        d:Content="v0.0.0.0"
+                        FontSize="11"
+                        Content="{Binding ViewModel.AppVersion, Mode=OneWay}">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="MouseLeftButtonUp">
+                                    <i:InvokeCommandAction Command="{Binding ViewModel.SuperUserManager.SuperUserTriggerClickCommand}" />
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </Label>
+                        <Label
+                        Padding="0"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Cursor="Hand"
+                        FontSize="11"
+                        ToolTip="Visit GitHub">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="MouseLeftButtonUp">
+                                    <i:InvokeCommandAction Command="{Binding ViewModel.VisitAuthorsGithubCommand}" />
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                            <TextBlock>
+                            <Run Text="by"/>
+                            <Run d:Text="Mi5hmasH" Text="{Binding ViewModel.AppAuthor, Mode=OneWay}"/>
+                            </TextBlock>
+                        </Label>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="0">
+                        <Separator Margin="5,2,2,2"/>
+                        <Button
+                        Padding="3"
+                        FontSize="24"
+                        FontFamily="{StaticResource IconFont}"
+                        d:Content="X"
+                        Content="{Binding ViewModel.GithubIcon}"
+                        ToolTip="Visit Project's Repo"
+                        Background="#00000000" 
+                        BorderBrush="#00000000"
+                        Command="{Binding ViewModel.VisitProjectsRepoCommand}"/>
+                    </StackPanel>
+                </Grid>
+            </Grid>
+        </Grid>
+        <!-- StatusBar -->
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <ProgressBar
+                HorizontalAlignment="Stretch"
+                Padding="0"
+                d:Value="100"
+                Value="{Binding ViewModel.ProgressValue}"
+                Background="Transparent"
+                IsIndeterminate="{Binding ViewModel.IsBusy}" />
+            <StatusBar Grid.Row="1" Margin="0" Padding="0">
+                <TextBlock d:Text="Status" Text="{Binding ViewModel.ProgressText}" />
+            </StatusBar>
+        </Grid>
+    </Grid>
+</Window>

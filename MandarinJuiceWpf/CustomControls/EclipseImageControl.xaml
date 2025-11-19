@@ -1,0 +1,72 @@
+<UserControl x:Class="MandarinJuiceWpf.CustomControls.EclipseImageControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:s="clr-namespace:System;assembly=System.Runtime"
+             xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+             mc:Ignorable="d"
+             x:Name="Root">
+    <UserControl.Resources>
+        <s:String x:Key="OuterImageBase64">iVBORw0KGgoAAAANSUhEUgAAADgAAAA4CAMAAACfWMssAAAAq1BMVEUAAAD////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////Nr6iZAAAAOHRSTlMABAgRDBcbJlEiNSofV0A8kkWJSC59TF1tYjlpWoQygXVlv7mal6uno3Hrx7WxecOejcvx6NHf1wk8pfAAAAVnSURBVEjHjZaHdtswDEVJAhzae2/vvZK0+f8vqyTbdTrs9vkca/GCAAGJID9FySvRF4/YK+6VWcTHsK9n9F/uUJNdj+PkdGTo9QKHG3+hb2a5HK8YJdCPGgf35wwpBUboaO1PcrTvyJvLHAkD6MciMkCGvDfRw4z+HjDF8UokMICSCklQMxA5AJiAJgx2rhGMHj2EMJJBNjwtJXQAcapJnQtpCC4p5SalOLoG+HWtxweUYOQRIKrANATLD/VAq21dqyUBg1Po4yWY80eklPXWNDmsRD7jjIu56QVCubkdh1bi6TanoSQcCFAodcruGBkCQF7rQyIjnxjinGqJEcwCpTz/oFRApU3BJL3NzhZjUPflR03jmueZSLRdgHa20zPHPlmdle3OSeFALLBmgovO00PG2GNlkDu2oZeJjiSbijiZVGXsnYqorL7P21baOXrclLJTKhf8zjFGQZpGkgbB+qCQLXwtWnyklpq382yxcWdFqLgVCj3MsrVXO3jLBx0ChNqO/VVRNquUOZd4vdcemeJK1V0pnDA5nJWTc87xnnwhTV6X6f7iF+7W59WU/lZXqS8dQ82WiRM6Rc7ofXVQ6LkRltVls2xPm5VN/lCua9ZkUupxs8o4wM+EUNCVsoPq++e2WvjkL2LdZhoE7nHVJblAer/bywyKQq23n98q8ldNTl7z8TFv5ufwa4lzzQAjidpi8UaeKLu8HVfLVSEpZYzeQDDtJlKG3boVPgPhfbpfpaEwpIA7yLhhLS7HfZOkc/JUi2UTe4l/tk14VDkPzpNvb2/f9vAcFK67uHw/urbJcSABgANjsnS3m89P8kLvn5+f3/YH5w5qukqjQ6Yyf/L+EuyxnW/V/P4B6SMM0tnkctkeL99egX7mmNgDg37mt5/Xs7K2egXqjpPXUgAyRultTtOu5rPVYnp8Bc6r1LKNAaS9RlBIa/u+eXt727wCJ7NDEuiSAw7o1VGur6OocpfTV+B2trbsUOPDlDcQud417txvs1egu7Y83ejBnruXnOFZpXJM8lLLyJNi9PMGogjtIBf9Sd6+XJy2ULo2FOoNM2qj9xs0b734pj3nuJ/acizxKzomhYHQVbTc77bPwenuvI5NxtjPCqC056SjVFktVuwpWJ72fumFnI3UDUTOkXuN27hPEwIErdXMkibHX/drrTwU7Wnmrp5kf+KQHm1SfYjxS+SOFQcHN20m7/7fOGvy8Z4RSlge6/DgUDq6dNLMi47fN81fuCjyG/fNZThsiALYPf+axrkeh2E0PX64NNn9hjH3PMvSWH3fmwDXRIwcAjIwDDTa5XI3w3CbxxvzgZnfC7fwG1sZ2m6bC/PrrkpRADUK15+fJC59un/31fK0rA6+9bHZv0dJFPuJ4QnaHJXJKXmwSKlmRcVhppP1VKiPDys7V023jsLTZjeZOq0VRDrXBYkXCSK7g0MzI+LCK12beNOYLo8npy3TMu4OZredzKZJHRlWJtAQREYOvX90xpKzLWlXATHnEY2ni8RJc+U4Vmvm853rRkJlPLORaYJgbdIv3UNtg7FWBLqzoL5bSeUZtQy9TuOd67ZpjkUoE0mpEIR87Vc0ybROMXQqm+h+4oEyNcE1PdaonbadZaNI0AmAkIF8FKvgBFQA/QIpQuM4BJ4zjiik3gcVBFYQClLX6BmMEM4f8/Vz996z4dXs/yTAaGl8ZziFOnRyyRkxGZNDtQE8EtmzbDgZ7iNSSvtx/Q+B93d6p6U2xAVkGPDoa+mtrxv2vTE3g51ro8qGnIEYXjpGh4GM/dYHfznQW6N7tXT1prcwvnp3hr7u3Omo4TiE8zD+H6LkDvZ6gjwlh/+/TfQDRWhjCNxvDJ8AAAAASUVORK5CYII=</s:String>
+        <Style x:Key="CenteredRectStyle" TargetType="Rectangle">
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+        </Style>
+        <s:Double x:Key="OuterSize">56</s:Double>
+        <s:Double x:Key="InnerSize">36</s:Double>
+        <s:Double x:Key="InnerFillSize">32</s:Double>
+    </UserControl.Resources>
+    <Grid
+        Visibility="{Binding ShouldBeVisible, ElementName=Root, Converter={StaticResource BooleanToVisibilityConverter}}">
+        <Rectangle
+            Style="{StaticResource CenteredRectStyle}"
+            Height="{StaticResource OuterSize}"
+            Width="{StaticResource OuterSize}"
+            Fill="{Binding AccentBrush, ElementName=Root}">
+            <Rectangle.OpacityMask>
+                <ImageBrush ImageSource="{Binding Source={StaticResource OuterImageBase64}, Converter={StaticResource Base64ToImageConverter}}"
+                            Stretch="Fill"
+                            AlignmentX="Center"
+                            AlignmentY="Center"/>
+            </Rectangle.OpacityMask>
+        </Rectangle>
+        <Rectangle
+            Style="{StaticResource CenteredRectStyle}"
+            Height="{StaticResource InnerSize}"
+            Width="{StaticResource InnerSize}"
+            RadiusX="{Binding CornerRadius, ElementName=Root}"
+            RadiusY="{Binding CornerRadius, ElementName=Root}"
+            StrokeThickness="4"
+            Stroke="{Binding AccentBrush, ElementName=Root}">
+            <Rectangle.Effect>
+                <BlurEffect KernelType="Gaussian" RenderingBias="Performance" Radius="6"/>
+            </Rectangle.Effect>
+        </Rectangle>
+        <Rectangle
+            Style="{StaticResource CenteredRectStyle}"
+            Height="{StaticResource InnerSize}"
+            Width="{StaticResource InnerSize}"
+            RadiusX="{Binding CornerRadius, ElementName=Root}"
+            RadiusY="{Binding CornerRadius, ElementName=Root}"
+            StrokeThickness="3"
+            Stroke="{Binding AccentBrush, ElementName=Root}"/>
+        <Rectangle
+            Style="{StaticResource CenteredRectStyle}"
+            Height="{StaticResource InnerFillSize}"
+            Width="{StaticResource InnerFillSize}"
+            RadiusX="{Binding CornerRadius, ElementName=Root}"
+            RadiusY="{Binding CornerRadius, ElementName=Root}"
+            ToolTip="{Binding ImageToolTip, ElementName=Root}"
+            Cursor="Hand">
+            <Rectangle.Fill>
+                <ImageBrush ImageSource="{Binding Base64InnerImage, ElementName=Root, Converter={StaticResource Base64ToImageConverter}}" />
+            </Rectangle.Fill>
+            <b:Interaction.Triggers>
+                <b:EventTrigger EventName="MouseLeftButtonUp">
+                    <b:InvokeCommandAction Command="{Binding InnerClickCommand, ElementName=Root}" />
+                </b:EventTrigger>
+            </b:Interaction.Triggers>
+        </Rectangle>
+    </Grid>
+</UserControl>
