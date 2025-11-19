@@ -1,0 +1,7 @@
+# Set default behavior to automatically normalize line endings.
+* text=auto
+
+# Treat these files as binary
+*/Resources/profile.bin     binary
+*/Resources/decrypted.bin   binary
+*/Resources/encrypted.bin   binary

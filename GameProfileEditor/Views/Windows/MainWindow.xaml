@@ -1,0 +1,240 @@
+﻿<Window x:Class="GameProfileEditor.Views.Windows.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:w="clr-namespace:GameProfileEditor.Views.Windows"
+        xmlns:p="clr-namespace:Mi5hmasH.WpfHelper.ControlProperties;assembly=Mi5hmasH.WpfHelper"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance w:MainWindow, IsDesignTimeCreatable=False}"
+        d:Title="AppTitle"
+        Title="{Binding ViewModel.AppTitle, Mode=OneWay}"
+        d:DesignHeight="465"
+        Height="465"
+        MinHeight="465"
+        d:DesignWidth="600"
+        Width="600"
+        MinWidth="600"
+        ResizeMode="CanResizeWithGrip"
+        p:DropProperties.DropOperationType="FileDropped"
+        AllowDrop="True"
+        Drop="FileDrop_Drop"
+        PreviewDragEnter="FileDrop_PreviewDragEnter"
+        PreviewDragOver="FileDrop_PreviewDragOver">
+
+    <Window.Resources>
+        <Thickness x:Key="SectionMargin">0,0,0,10</Thickness>
+        <Thickness x:Key="IconButtonMargin">10,0,0,0</Thickness>
+
+        <Style x:Key="SectionStackStyle" TargetType="StackPanel">
+            <Setter Property="Margin" Value="{StaticResource SectionMargin}" />
+        </Style>
+    </Window.Resources>
+
+    <Window.InputBindings>
+        <KeyBinding Key="N" Modifiers="Control" Command="{Binding ViewModel.NewGameProfileCommand}" />
+        <KeyBinding Key="O" Modifiers="Control" Command="{Binding ViewModel.LoadGameProfileCommand}" />
+        <KeyBinding Key="S" Modifiers="Control" Command="{Binding ViewModel.SaveGameProfileCommand}" />
+        <KeyBinding Key="S" Modifiers="Control+Shift" Command="{Binding ViewModel.SaveGameProfileAsCommand}" />
+    </Window.InputBindings>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- Top Menu -->
+        <Border
+            d:BorderBrush="Black" d:BorderThickness="2"
+            CornerRadius="5"
+            Margin="10, 5"
+            Background="{DynamicResource ControlFillColorDefaultBrush}"
+            ClipToBounds="True">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Menu>
+                    <MenuItem Header="File">
+                        <MenuItem Header="New" Command="{Binding ViewModel.NewGameProfileCommand}" InputGestureText="Ctrl+N"/>
+                        <MenuItem Header="Open" Command="{Binding ViewModel.LoadGameProfileCommand}" InputGestureText="Ctrl+O"/>
+                        <MenuItem Header="Save" Command="{Binding ViewModel.SaveGameProfileCommand}" InputGestureText="Ctrl+S"/>
+                        <MenuItem Header="Save As..." Command="{Binding ViewModel.SaveGameProfileAsCommand}" InputGestureText="Ctrl+Shift+S"/>
+                        <Separator />
+                        <MenuItem Header="Exit" Command="{Binding ViewModel.ExitApplicationCommand}"/>
+                    </MenuItem>
+                </Menu>
+                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                    <Label Content="{Binding ViewModel.AppVersion, Mode=OneWay}" d:Content="v0.0.0.0" FontSize="11" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                    <Label
+                        Padding="0"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Cursor="Hand"
+                        FontSize="11"
+                        ToolTip="Visit Author's GitHub">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="MouseLeftButtonUp">
+                                <i:InvokeCommandAction Command="{Binding ViewModel.VisitAuthorsGithubCommand}" />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                        <TextBlock>
+                            <Run Text="by"/>
+                            <Run d:Text="Mi5hmasH" Text="{Binding ViewModel.AppAuthor, Mode=OneWay}"/>
+                        </TextBlock>
+                    </Label>
+                </StackPanel>
+                <StackPanel Grid.Column="2" Orientation="Horizontal" Margin="0,0,5,0">
+                    <Separator Margin="5,5,2,5"/>
+                    <Button
+                        Padding="3"
+                        FontSize="24"
+                        FontFamily="{StaticResource IconFont}"
+                        d:Content="X"
+                        Content="{Binding ViewModel.GithubIcon}"
+                        ToolTip="Visit Project's Repo"
+                        Background="#00000000" 
+                        BorderBrush="#00000000"
+                        Command="{Binding ViewModel.VisitProjectsRepoCommand}"
+                        />
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Main Content -->
+        <Grid Grid.Row="1" Margin="5">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="5,0">
+
+                    <!-- Filename -->
+                    <StackPanel Style="{StaticResource SectionStackStyle}">
+                        <Label Content="Filename" />
+                        <TextBox Text="{Binding ViewModel.GameProfileManager.CurrentlyLoadedProfileName, UpdateSourceTrigger=LostFocus, Mode=TwoWay}" />
+                    </StackPanel>
+
+                    <!-- Game Title -->
+                    <StackPanel Style="{StaticResource SectionStackStyle}">
+                        <Label Content="Game Title" />
+                        <TextBox Text="{Binding ViewModel.GameProfileManager.GameProfile.GameTitle, UpdateSourceTrigger=LostFocus, Mode=TwoWay}" />
+                    </StackPanel>
+
+                    <!-- Platform & App ID -->
+                    <Grid Margin="{StaticResource SectionMargin}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="10" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel>
+                            <Label Content="Gaming Platform" />
+                            <ComboBox 
+                                MaxDropDownHeight="200" 
+                                ItemsSource="{Binding ViewModel.GamingPlatformOptions}"
+                                SelectedItem="{Binding ViewModel.GameProfileManager.GameProfile.Platform, Mode=TwoWay}">
+                            </ComboBox>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="2">
+                            <Label Content="App ID" />
+                            <TextBox Text="{Binding ViewModel.GameProfileManager.GameProfile.AppId, UpdateSourceTrigger=LostFocus, Mode=TwoWay}" />
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- Mandarin Seed & User ID Parsing Variant -->
+                    <Grid Margin="{StaticResource SectionMargin}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="10" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel>
+                            <Label Content="Mandarin Seed" />
+                            <TextBox Text="{Binding ViewModel.GameProfileManager.GameProfile.MandarinSeed, UpdateSourceTrigger=LostFocus, Mode=TwoWay}" />
+                        </StackPanel>
+                        <StackPanel Grid.Column="2">
+                            <Label Content="User ID Parsing Variant" Margin="0,0,20,0" />
+                            <TextBox Text="{Binding ViewModel.GameProfileManager.GameProfile.ParseVariant, UpdateSourceTrigger=LostFocus, Mode=TwoWay}" />
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- Mandarin Flavor & GameProfile Icon -->
+                    <Grid Margin="{StaticResource SectionMargin}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="10" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel>
+                            <Label Content="Mandarin Flavor" />
+                            <ComboBox 
+                                MaxDropDownHeight="200"
+                                ItemsSource="{Binding ViewModel.MandarinFileFlavors}"
+                                SelectedItem="{Binding ViewModel.GameProfileManager.GameProfile.MandarinFileFlavor, Mode=TwoWay}">
+                            </ComboBox>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="2">
+                            <Label>
+                                <TextBlock>
+                                    <Run Text="GameProfile Icon"/>
+                                    <Run FontSize="11" 
+                                         Foreground="{DynamicResource AccentTextFillColorTertiaryBrush}" 
+                                         Text="(*.png; *.jpg; *.jpeg; *.bmp) [32x32 - 96dpi]"/>
+                                </TextBlock>
+                            </Label>
+                            <StackPanel Orientation="Horizontal">
+                                <Rectangle
+                                    Height="32" 
+                                    Width="32"
+                                    RadiusX="5"
+                                    RadiusY="5"
+                                    d:Stroke="Black"
+                                    Stroke="{DynamicResource AccentFillColorDefaultBrush}"
+                                    StrokeThickness="2">
+                                    <Rectangle.Fill>
+                                        <ImageBrush ImageSource="{Binding ViewModel.GameProfileManager.GameProfile.Base64GpIcon, Converter={StaticResource Base64ToImageConverter}}" />
+                                    </Rectangle.Fill>
+                                </Rectangle>
+                                <Button Margin="{StaticResource IconButtonMargin}" Command="{Binding ViewModel.ImportGameProfileImageCommand}">
+                                    <TextBlock>
+                                        <Run FontFamily="{StaticResource IconFont}" Text="{Binding ViewModel.ImportIcon, Mode=OneWay}"/>
+                                        <Run Text="Import Image"/>
+                                    </TextBlock>
+                                </Button>
+                                <Button Margin="{StaticResource IconButtonMargin}" Command="{Binding ViewModel.ExportGameProfileImageCommand}">
+                                    <TextBlock>
+                                        <Run FontFamily="{StaticResource IconFont}" Text="{Binding ViewModel.ExportIcon, Mode=OneWay}"/>
+                                        <Run Text="Export Image"/>
+                                    </TextBlock>
+                                </Button>
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
+
+        <!-- StatusBar -->
+        <Grid Grid.Row="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <ProgressBar
+                HorizontalAlignment="Stretch"
+                Padding="0"
+                d:Value="100"
+                Value="100"
+                Background="Transparent"/>
+            <StatusBar
+                Grid.Row="1" Margin="0" Padding="0">
+                <TextBlock d:Text="Status" Text="{Binding ViewModel.ProgressText}" />
+            </StatusBar>
+        </Grid>
+    </Grid>
+</Window>
