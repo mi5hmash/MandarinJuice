@@ -99,6 +99,7 @@ If you want to encrypt the decrypted SaveData file\s, select the Game Profile **
 ### OTHER BUTTONS
 Button **(6)** swaps the values in the **"User ID (INPUT)"** and **"User ID (OUTPUT)"** TextBoxes.
 Button **(10)** cancels the currently running operation.
+Button **(14)** uses a brute‑force approach to find the correct UserID for source SaveData file.
 
 ## [CLI] - 🪟 Windows | 🐧 Linux | 🍎 macOS
 
@@ -109,6 +110,7 @@ Modes:
   -m d  Decrypt SaveData files
   -m e  Encrypt SaveData files
   -m r  Re-sign SaveData files
+  -m b  Bruteforce User ID for the first file in the input directory
 
 Options:
   -g <game_profile_path>  Path to the Game Profile file
@@ -132,6 +134,10 @@ Options:
 #### Re-sign
 ```bash
 .\mandarin-juice-cli.exe -m r -g ".\game_profile.bin" -p ".\InputDirectory" -uI 76561197960265729 -uO 76561197960265730
+```
+#### Bruteforce
+```bash
+.\mandarin-juice-cli.exe -m b -g ".\game_profile.bin" -p ".\InputDirectory"
 ```
 
 > [!NOTE]
