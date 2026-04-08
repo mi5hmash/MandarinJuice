@@ -119,7 +119,7 @@ Options:
   -u <user_id>            User ID (used in decrypt/encrypt modes)
   -uI <old_id>            Original User ID (used in re-sign mode)
   -uO <new_id>            New User ID (used in re-sign mode)
-  -v                      Verbose output
+  -q                      Don't wait for user input to exit after operation completes (auto-close)
   -h                      Show this help message
 ```
 
