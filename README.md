@@ -18,6 +18,7 @@ This application can **decrypt and encrypt SaveData files** from various games r
 |Mega Man Star Force Legacy Collection|3500390|Steam|
 |Monster Hunter Stories 3: Twisted Reflection|2852190|Steam|
 |Monster Hunter Wilds|2246340|Steam|
+|PRAGMATA|3357650|Steam|
 |Resident Evil 9 Requiem|3764200|Steam|
 
 # 🤯 Why was it created :interrobang:
@@ -151,3 +152,15 @@ All the problems I've encountered during my tests have been fixed on the go. If 
 > This application creates a log file that may be helpful in troubleshooting.
 It can be found in the same directory as the executable file.
 Application stores up to two log files from the most recent sessions.
+
+## [ISSUE] Game doesn’t detect SaveData file\s on Steam
+If you purchased the game on Steam and it doesn’t detect your re‑signed SaveData files after you’ve placed them in the correct folder, the issue is usually that a valid `remotecache.vdf` file also needs to be generated.
+
+Instructions on how to generate a proper `remotecache.vdf` can be found in [this gist](https://gist.github.com/mi5hmash/47f1be53d213be9b00f2c7e0aa151b11).
+
+## [ISSUE] Not all controls are visible in the WPF application on Windows
+You probably have your Windows system font size set higher than the default.
+Set the font size back to the default value, or press **`CTRL + SHIFT + J`** to unlock window resizing in the application.
+
+# 🔄 Alternatives  
+If you’re looking for a save editor (not just a re-signer or deencryptor), you might be interested in [ree-save-editor](https://github.com/kvasszn/ree-save-editor) by [kvasszn](https://github.com/kvasszn).

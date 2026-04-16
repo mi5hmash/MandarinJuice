@@ -12,9 +12,11 @@
         d:Title="AppTitle"
         Title="{Binding ViewModel.AppTitle, Mode=OneWay}"
         d:DesignHeight="330"
-        Height="330" 
+        Height="330"
+        MinHeight="330"
         d:DesignWidth="700"
         Width="700"
+        MinWidth="700"
         ResizeMode="CanMinimize">
     <!-- Input Bindings -->
     <Window.InputBindings>

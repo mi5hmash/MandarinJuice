@@ -1284,14 +1284,17 @@ public class MandarinDeencryptor(ulong mandarinSeed = 0)
             var currentSliceData = currentSlice[HeaderDataSizeInBytes..];
             DeencryptData(currentSliceData, headerChecksumB);
 
+            if (currentSliceDataLength > remainingBytes)
+                currentSliceDataLength = remainingBytes;
             // Validate segment checksum for the first slice only
-            if (currentSliceDataLength > remainingBytes) currentSliceDataLength = remainingBytes;
             if (positionD == 0)
             {
                 // Calculate the checksum of the current slice data
-                var sliceChecksum = CalculateSliceDataChecksum(currentSliceData[..currentSliceDataLength]);
+                var slice = currentSliceData[..currentSliceDataLength];
+                var sliceChecksum = CalculateSliceDataChecksum(slice);
                 // Validate slice checksum
-                var currentSliceChecksum = MemoryMarshal.Cast<byte, ulong>(currentSliceHeader)[^2];
+                var currentSliceHeaderAsUlongs = MemoryMarshal.Cast<byte, ulong>(currentSliceHeader);
+                var currentSliceChecksum = currentSliceHeaderAsUlongs[^2];
                 if (sliceChecksum != currentSliceChecksum) 
                     throw new InvalidDataException("Mandarin Data Segment checksum validation failed.");
             }
