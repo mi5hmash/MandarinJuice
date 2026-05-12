@@ -46,6 +46,8 @@ On Windows, you can use either the CLI or the GUI version, but in this chapter I
 
 <img src="https://github.com/mi5hmash/MandarinJuice/blob/main/.resources/images/MainWindow-v1.png" alt="MainWindow-v1"/>
 
+ok
+
 #### 1. Selecting the Game Profile
 Game Profile is a configuration file that stores the settings for a specific game.
 In plain terms, it tells my application how it should behave for that particular game.
