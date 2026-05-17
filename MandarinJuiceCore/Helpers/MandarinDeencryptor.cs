@@ -338,8 +338,12 @@ public class MandarinDeencryptor(ulong mandarinSeed = 0)
     {
         const byte shift = 0xE;
         var mandarinQueue = new MandarinSlicesQueue(shift);
+        
+        // Current:
+        // var laps = (dataLength >> shift) + 1;
 
-        var laps = (dataLength >> shift) + 1;
+        // Proposed fix:
+        var laps = (dataLength + 0x3FFF) >> shift;
 
         for (var i = 0; i < laps; i++)
         {
