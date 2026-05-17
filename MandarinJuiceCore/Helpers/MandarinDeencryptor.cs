@@ -1,4 +1,4 @@
-﻿using MandarinJuiceCore.Models.DSSS.Mandarin;
+using MandarinJuiceCore.Models.DSSS.Mandarin;
 using System.Buffers.Binary;
 using System.Numerics;
 using System.Runtime.InteropServices;
@@ -943,7 +943,7 @@ public class MandarinDeencryptor(ulong mandarinSeed = 0)
     /// </summary>
     /// <param name="sliceData">The read-only span of bytes representing the data to compute the checksum for.</param>
     /// <returns>A 64-bit unsigned integer representing the computed checksum value for the provided data slice.</returns>
-    private static ulong CalculateSliceDataChecksum(ReadOnlySpan<byte> sliceData)
+    public static ulong CalculateSliceDataChecksum(ReadOnlySpan<byte> sliceData)
     {
         const byte shift = 0x2F;
         const byte rotation0 = 0x12;
@@ -1001,8 +1001,10 @@ public class MandarinDeencryptor(ulong mandarinSeed = 0)
 
                 // Mix combos with data from the other batches
                 const byte batchSizeInUlongs = 0x8;
-                var laps = sliceDataAsUlongs.Length / batchSizeInUlongs;
-                laps -= sliceDataAsUlongs.Length % batchSizeInUlongs == 0 ? 1 : 0;
+                // [FIX] Original flawed loop iteration calculation:
+                // var laps = sliceDataAsUlongs.Length / batchSizeInUlongs;
+                // laps -= sliceDataAsUlongs.Length % batchSizeInUlongs == 0 ? 1 : 0;
+                var laps = (contentLength - 1) / 64;
                 for (var i = 0; i < laps; i++)
                 {
                     var position = i * batchSizeInUlongs;
@@ -1092,7 +1094,8 @@ public class MandarinDeencryptor(ulong mandarinSeed = 0)
                 comboC = multiplier * ((comboB >> shift) ^ comboA ^ comboB);
                 checksum = ((comboC >> shift) ^ comboC) * multiplier;
                 break;
-            case > 8:
+            // [FIX] Original logic: case > 8: (caused lengths of exactly 8 to route to the wrong handler)
+            case >= 8:
                 batchSizeInBytes = 8;
                 multiplier = (ulong)contentLength * 2 + salt1;
                 // Create combos from the last batch
@@ -1104,7 +1107,8 @@ public class MandarinDeencryptor(ulong mandarinSeed = 0)
                 comboD = multiplier * ((comboC >> shift) ^ comboC ^ comboB);
                 checksum = ((comboD >> shift) ^ comboD) * multiplier;
                 break;
-            case > 4:
+            // [FIX] Original logic: case > 4: (caused lengths of exactly 4 to route to the wrong handler)
+            case >= 4:
                 batchSizeInBytes = 4;
                 multiplier = (ulong)contentLength * 2 + salt1;
                 var sliceDataAsUints = MemoryMarshal.Cast<byte, uint>(sliceData);
@@ -1173,7 +1177,6 @@ public class MandarinDeencryptor(ulong mandarinSeed = 0)
     {
         // create localContainerA
         Span<ulong> localContainerA = stackalloc ulong[ContainerCapacityInUlongs];
-        localContainerA.Clear();
 
         // create localContainerB
         Span<ulong> localContainerB = stackalloc ulong[ContainerCapacityInUlongs];
@@ -1185,14 +1188,18 @@ public class MandarinDeencryptor(ulong mandarinSeed = 0)
 
         // create localContainerD
         Span<ulong> localContainerD = stackalloc ulong[ContainerCapacityInUlongs];
-        localContainerD.Clear();
 
         // calculate checksum parts
         for (var i = 0; i < encryptionKey.Length; i++)
         {
             var position = i * 2 * HeaderDataKeySizeInUlongs;
+            // [FIX] Explicitly clear the container. Since it's a stackalloc array reused in a loop,
+            // copying 8 ulongs into a 32-ulong array leaves garbage state from previous iterations.
+            localContainerA.Clear();
             headerData.Slice(position, HeaderDataKeySizeInUlongs).CopyTo(localContainerA);
             Limegator(localContainerA, localContainerB, localContainerC);
+            // [FIX] Explicitly clear the container to prevent carrying over garbage state from previous iterations.
+            localContainerD.Clear();
             headerData.Slice(position + HeaderDataKeySizeInUlongs, HeaderDataKeySizeInUlongs).CopyTo(localContainerD);
             Limeghetti(localContainerD, localContainerA);
             encryptionKey[i] = localContainerD[0];
