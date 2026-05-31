@@ -364,6 +364,7 @@ public class Core(SimpleLogger logger, ProgressReporter progressReporter)
     /// <param name="inputDir">The directory path containing the files to process. Must not be null or empty.</param>
     /// <param name="gamingPlatform">The gaming platform implementation used to parse and set the user ID during the brute-force operation. Cannot be null.</param>
     /// <param name="cts">A cancellation token source that can be used to cancel the brute-force operation.</param>
+    /// <returns><see langword="true"/> if the UserID was found; otherwise, <see langword="false"/>.</returns>
     public async Task<bool> BruteforceUserIdAsync(string inputDir, IGamingPlatform gamingPlatform,
         CancellationTokenSource cts)
         => await Task.Run(() => BruteforceUserId(inputDir, gamingPlatform, cts));
@@ -374,6 +375,7 @@ public class Core(SimpleLogger logger, ProgressReporter progressReporter)
     /// <param name="inputDir">The directory path containing the files to process. Must not be null or empty.</param>
     /// <param name="gamingPlatform">The gaming platform implementation used to parse and set the user ID during the brute-force operation. Cannot be null.</param>
     /// <param name="cts">A cancellation token source that can be used to cancel the brute-force operation.</param>
+    /// <returns><see langword="true"/> if the UserID was found; otherwise, <see langword="false"/>.</returns>
     public bool BruteforceUserId(string inputDir, IGamingPlatform gamingPlatform, CancellationTokenSource cts)
     {
         // GET FILES TO PROCESS

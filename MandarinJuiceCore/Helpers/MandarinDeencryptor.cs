@@ -1384,6 +1384,49 @@ public class MandarinDeencryptor(ulong mandarinSeed = 0)
         return encryptedData;
     }
 
+    /// <summary>
+    /// Computes a 32-bit Murmur3 hash for the specified sequence of unsigned integers.
+    /// </summary>
+    /// <param name="data">The input data to hash, represented as a read-only span of 32-bit unsigned integers.</param>
+    /// <param name="seed">An optional seed value to initialize the hash computation. Using different seeds produces different hash results for the same input data.</param>
+    /// <returns>A 32-bit unsigned integer containing the computed Murmur3 hash of the input data.</returns>
+    public static uint Murmur3_32(ReadOnlySpan<uint> data, uint seed = 0)
+    {
+        const uint hash0 = 0x1B873593;
+        const uint hash1 = 0xCC9E2D51;
+        const uint hash2 = 0x052250EC;
+        const uint hash3 = 0xC2B2AE35;
+        const uint hash4 = 0x85EBCA6B;
+
+        const byte rotation1 = 0xD;
+        const byte rotation2 = 0xF;
+        const byte shift1 = 0x10;
+
+        var lengthInBytes = data.Length * sizeof(uint);
+
+        foreach (var e in data)
+            seed = 5 * (uint.RotateLeft((hash0 * uint.RotateLeft(hash1 * e, rotation2)) ^ seed, rotation1) - hash2);
+
+        uint mod0 = 0;
+        switch (lengthInBytes & 3)
+        {
+            case 3:
+                mod0 = data[2] << shift1;
+                goto case 2;
+            case 2:
+                mod0 ^= data[1] << 8;
+                goto case 1;
+            case 1:
+                seed ^= hash0 * uint.RotateLeft(hash1 * (mod0 ^ data[0]), rotation2);
+                break;
+        }
+
+        var basis = (uint)(lengthInBytes ^ seed);
+        var hiWordOfBasis = (basis >> shift1) & 0xFFFF;
+
+        return (hash3 * ((hash4 * (basis ^ hiWordOfBasis)) ^ ((hash4 * (basis ^ hiWordOfBasis)) >> rotation1))) ^ ((hash3 * ((hash4 * (basis ^ hiWordOfBasis)) ^ ((hash4 * (basis ^ hiWordOfBasis)) >> rotation1))) >> shift1);
+    }
+
     #endregion
 
     #region BRUTEFORCE HELPERS
