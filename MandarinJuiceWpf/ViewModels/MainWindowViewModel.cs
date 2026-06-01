@@ -18,7 +18,8 @@ using System.Media;
 using System.Windows;
 using MandarinJuiceCore;
 using MandarinJuiceCore.GameProfile;
-using MandarinJuiceCore.GamingPlatforms;
+using MandarinJuiceCore.GamingPlatformsFactory;
+using MandarinJuiceCore.GamingPlatformsFactory.Platforms;
 using MandarinJuiceCore.Helpers;
 using MandarinJuiceCore.Infrastructure;
 using MandarinJuiceWpf.Helpers;
@@ -194,7 +195,7 @@ public partial class MainWindowViewModel : ObservableValidator
             // Copy Mandarin Seed to Deencryptor
             _core.Deencryptor.MandarinSeed = GameProfileManager.GameProfile.MandarinSeed;
             // Set GamingPlatform
-            GamingPlatform = GamingPlatformHelper.GetGamingPlatform(GameProfileManager.GameProfile.Platform);
+            GamingPlatform = GamingPlatformRegistry.GetGamingPlatform(GameProfileManager.GameProfile.Platform);
             GamingPlatform.AppId = appId;
             GamingPlatform.ParseVariant = GameProfileManager.GameProfile.ParseVariant;
         }

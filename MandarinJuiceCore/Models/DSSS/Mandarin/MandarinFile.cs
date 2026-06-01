@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 
 namespace MandarinJuiceCore.Models.DSSS.Mandarin;
 
-public class MandarinFile(MandarinDeencryptor deencryptor, MandarinFileFlavor mandarinFileFlavor)
+public sealed class MandarinFile(MandarinDeencryptor deencryptor, MandarinFileFlavorEnum mandarinFileFlavor)
 {
     /// <summary>
     /// File extension of the <see cref="MandarinFile"/>.
@@ -121,7 +121,7 @@ public class MandarinFile(MandarinDeencryptor deencryptor, MandarinFileFlavor ma
     /// </summary>
     /// <returns><see langword="true"/> if the encryption type allows compression; otherwise, <see langword="false"/>.</returns>
     private bool IsCompressionAllowed()
-        => Header.EncryptionType == (uint)MandarinFileFlavor.Compressible;
+        => Header.EncryptionType == (uint)MandarinFileFlavorEnum.Compressible;
 
     /// <summary>
     /// Decompresses data from a Deflate-compressed byte span, returning the original uncompressed bytes.

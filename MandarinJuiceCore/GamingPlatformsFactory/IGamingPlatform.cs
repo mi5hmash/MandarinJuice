@@ -1,4 +1,4 @@
-﻿namespace MandarinJuiceCore.GamingPlatforms;
+﻿namespace MandarinJuiceCore.GamingPlatformsFactory;
 
 public interface IGamingPlatform
 {

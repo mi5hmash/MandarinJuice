@@ -10,7 +10,7 @@ using AesNative = System.Security.Cryptography.Aes;
 
 namespace MandarinJuiceCore.Helpers;
 
-public class MandarinDeencryptor(ulong mandarinSeed = 0)
+public sealed class MandarinDeencryptor(ulong mandarinSeed = 0)
 {
     #region CONSTANTS
 

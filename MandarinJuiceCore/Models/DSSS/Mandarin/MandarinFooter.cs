@@ -2,7 +2,7 @@
 
 namespace MandarinJuiceCore.Models.DSSS.Mandarin;
 
-public class MandarinFooter
+public sealed class MandarinFooter
 {
     public const int Size = 0x8C;
     private const int SaltSize = 0x80;

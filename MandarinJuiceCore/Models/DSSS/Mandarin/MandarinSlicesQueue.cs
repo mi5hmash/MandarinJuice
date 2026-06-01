@@ -4,7 +4,7 @@
 /// Represents a queue of byte values that tracks the total length and provides shifted operations based on a specified shift value.
 /// </summary>
 /// <param name="shift">The number of bits to shift when performing shifted operations. Must be between 0 and 7, inclusive.</param>
-public class MandarinSlicesQueue(byte shift) : Queue<byte>
+public sealed class MandarinSlicesQueue(byte shift) : Queue<byte>
 {
     /// <summary>
     /// Gets the shift value used in the queue operations.

@@ -58,7 +58,7 @@
     value   : The object must be serialized into a byte array 
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
-   -->
+    -->
   <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
@@ -121,11 +121,39 @@
   <data name="decryptedFile" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\decrypted.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="encryptedFile" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\encrypted.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="encryptedFileSteamV3" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\encrypted-v3-steam.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
     <comment>User ID: 76561197960265729</comment>
   </data>
-  <data name="profileFile" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\profile.bin;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  <data name="encryptedFileSteamV1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\encrypted-v1-steam.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <comment>User ID: 76561197960265729</comment>
+  </data>
+  <data name="encryptedFileSteamV2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\encrypted-v2-steam.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <comment>User ID: 76561197960265729</comment>
+  </data>
+  <data name="profileFileSteamV2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\profile-v2-steam.bin;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="encryptedFileEpicV1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\encrypted-v1-epic.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <comment>User ID: 1234567890abcdef1234567890abcdef</comment>
+  </data>
+  <data name="encryptedFileEpicV2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\encrypted-v2-epic.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <comment>User ID: 1234567890abcdef1234567890abcdef</comment>
+  </data>
+  <data name="profileFileSteamV1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\profile-v1-steam.bin;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="profileFileSteamV3" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\profile-v3-steam.bin;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="profileFileEpicV1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\profile-v1-epic.bin;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="profileFileEpicV2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\profile-v2-epic.bin;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
 </root>

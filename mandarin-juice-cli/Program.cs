@@ -1,6 +1,6 @@
 ﻿using MandarinJuiceCore;
 using MandarinJuiceCore.GameProfile;
-using MandarinJuiceCore.GamingPlatforms;
+using MandarinJuiceCore.GamingPlatformsFactory;
 using MandarinJuiceCore.Helpers;
 using MandarinJuiceCore.Infrastructure;
 using Mi5hmasH.AppInfo;
@@ -174,7 +174,7 @@ void LoadGameProfile()
     // Configure Deencryptor
     core.Deencryptor.MandarinSeed = gameProfileManager.GameProfile.MandarinSeed;
     // Set GamingPlatform
-    gamingPlatform = GamingPlatformHelper.GetGamingPlatform(gameProfileManager.GameProfile.Platform);
+    gamingPlatform = GamingPlatformRegistry.GetGamingPlatform(gameProfileManager.GameProfile.Platform);
     gamingPlatform.ParseVariant = gameProfileManager.GameProfile.ParseVariant;
 }
 

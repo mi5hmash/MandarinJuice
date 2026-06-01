@@ -73,19 +73,95 @@ namespace QualityControl.xUnit.Properties {
         /// <summary>
         ///   Wyszukuje zlokalizowany zasób typu System.Byte[].
         /// </summary>
-        internal static byte[] encryptedFile {
+        internal static byte[] encryptedFileEpicV1 {
             get {
-                object obj = ResourceManager.GetObject("encryptedFile", resourceCulture);
+                object obj = ResourceManager.GetObject("encryptedFileEpicV1", resourceCulture);
                 return ((byte[])(obj));
             }
         }
         
         /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu JZlD5JFMCc+zuaUkyiYOUw4ejf9b8dZafEyQmT5bXdml7owPzgHBH+SOHsb+5F7mZWdkYn+VejFxkR0CkgOqEfBFhKI8ADuSFlvL+r1Fyc8j1y6pK58jKi8RbDJHtrR7ylek8E1J17lV5KLvcNjltkbQ9+3YDNZwzSlDfcYLrJ4VK94Qh44owww4y5HK+E7aikboIWp1jL4HP6aeJUwa91PiJewvnKpPk+nuOCZY5zDpYtL6mH5bhiB1LiDNAmQJaU1EJQokPo9/dK+bOdZfTRKBueX1K4QyT7MWxFSx+W+55HjKzwcv9t6B/95Sxnl6wtVAkIf7rVcAeNnmjj+4zlrgYFlaBU63JdrZGmKb3eti5jott82sbK5tnJvVSTTbAG+rDthMia7zMLLSCdWfFHKCxxoBNfhQDad5zi8d3RLipsmF8+EzBke1dvfxre0aNaHwIuEj7wI39TDemCNcsKLxZw4k8EDI4NNsyMLJTR1zZgErftAtoBATXiJKsS/d [obcięto pozostałą część ciągu]&quot;;.
+        ///   Wyszukuje zlokalizowany zasób typu System.Byte[].
         /// </summary>
-        internal static string profileFile {
+        internal static byte[] encryptedFileEpicV2 {
             get {
-                return ResourceManager.GetString("profileFile", resourceCulture);
+                object obj = ResourceManager.GetObject("encryptedFileEpicV2", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Wyszukuje zlokalizowany zasób typu System.Byte[].
+        /// </summary>
+        internal static byte[] encryptedFileSteamV1 {
+            get {
+                object obj = ResourceManager.GetObject("encryptedFileSteamV1", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Wyszukuje zlokalizowany zasób typu System.Byte[].
+        /// </summary>
+        internal static byte[] encryptedFileSteamV2 {
+            get {
+                object obj = ResourceManager.GetObject("encryptedFileSteamV2", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Wyszukuje zlokalizowany zasób typu System.Byte[].
+        /// </summary>
+        internal static byte[] encryptedFileSteamV3 {
+            get {
+                object obj = ResourceManager.GetObject("encryptedFileSteamV3", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu 4qwuiIXmN7URnWn7w+CvMzkrpFQVojJrSjFMDH4vqMaGjreqJjBPQDImSEgTyobjoBIH0E3wYUkeWNn/3nAjfcdHhBW5IF+DurILrlsIpVeK80cK/MFAusK/i6D6Rw2erGns152FR3Uk8cPKqTrBgRcw7XlKerd+G+AIm2NDRAu142+DD9FQYblAcSMfKct4nn77yvZENbUchV4C60KLYdj63e15Q3WCRN1sbxGUqHRv2zMgVIBqD7Bp4Vo+M3Umb8TckrdYn93XFLrYKdjYk1wM/li1bJyU2LgVwuM1PWPYHNhQJftXT0vEqoQMgx2IyEtnybBkdGOkbIHAUWh8Q4+AdC1T3kX9EyFv84Otfo43vyCp0VvTWXxMLBU80t7ZzhfVpDIqR4Ch3eB7dGFvIeqaWTLZASQTxfKZXPx9uvQ=.
+        /// </summary>
+        internal static string profileFileEpicV1 {
+            get {
+                return ResourceManager.GetString("profileFileEpicV1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu PG0HvORZ7jXAgOWqTMW5R1wzgXHAIRTYnAKe2LqRRraaDG3NVd9giy/Liz/uOBbCxexJtjgsPetXn/VITZ1swx/t8Aqni6zlo/P3+tTPaghM0mGHsEhsx4vgCgxm9fcmtrOWCCGymDrH4zI1uCCk8TtURYenOH5G4N1KPRszO8xqk69KDuWOVjePvhEnOdRpd0qfvPMjxbyWv6TnQuMG3TEfa63I7xyVn9k9VTVVVJqqrfKWKzd+/TME09hMUteGWCVCkt503qLP/ZU8KPI+7+ZXdc4eOG2/eVHMGEYeFZmrU6s9ufVI5wgR+pXaqGKOsWV8+AnTHeknU6+fuoQst3YAPvBYVbOcsWXnomfIQg9KAJsz2jqAOoFCJpbj+xccxpL6WYW+a4IgS0BU7s3Ixg==.
+        /// </summary>
+        internal static string profileFileEpicV2 {
+            get {
+                return ResourceManager.GetString("profileFileEpicV2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu pSKZwgv3dqoFceR8hTjqoZMQZZNg0Pp+SnqkOTOc19+T8gefvLgynWJHnOOsJm0aHRHUNhUaPn6VJpm2lxKY4hmHC8oI1KK1ggNUBIJwoQDNTgB87njZBiCxUlO0cHeiWv4TkK5r5kwt/1Ra9YydksRhnLC2KwMgiGJPCC4eQUuHzcJRcMXUendXenyzMK96nG9ySQE83yHVCOja0315c0rWpVm7qyK+O+6az3RsAv3lVYeT8V+IxTZGlazA+beQG9AjCGvmA7a6phKzdJ5hYKBLTUC9UeiHbnGqgs8W3Aqu47m1s7kRbc5thIo8GKvVlYxZF5wyeQlPfJJQ3vc0/1ly/dEOHKFiXTnBjnJvplkdpz5GE79Dbbl1fKFh2ipdapCaxbdgUYslza+6SGLiiA==.
+        /// </summary>
+        internal static string profileFileSteamV1 {
+            get {
+                return ResourceManager.GetString("profileFileSteamV1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu RgpKCi0ep/rmaIMPMvdpzFCdM/2lrjqXRbifyp8bdYC8Myq+tFTovgPRwrxiSCNUMebcGI8nTNYTbWuL+imKDusql61e9Y8RBJHYC0FBXOK2sKosPOb7rwGXHr6aEewJfyrI5Md/L3J5HWRRSjQ43nqqyPSe5AtrJG2vxcmrUfBhAADghbuE/reKV/CuUgMm0sDUic4UFWEa4v8yutaMGxmD7uYrEgWRQI4LmAera6ZQVv6oWKHf/Olw1Hc1715pOPhtYPfiVBcjgvy5jKMV9Jmn/O9eZQaDmpuuzR+mD7CaxfZ9VWD9UAKyDJlBxu6EieeB7ACOrLXartQaNlDHvhnZlwthM9+84VW7/NiVuh9mk8HBnMqVuSRpGMsmiWCG89s3wLEKN0tmIyOqJPXJuUB192nu+pMOFchdVAgHEUM=.
+        /// </summary>
+        internal static string profileFileSteamV2 {
+            get {
+                return ResourceManager.GetString("profileFileSteamV2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu aXIr9alpiPKINR7BAJ0FclydLMzMU84ossyLtx7wOnc7K0MiGGhltsHYoonv/SwUH4sKTi9LzunK8kulBxaAgU29tYTdJPlCTWDrnv/Iepb9+/lvOjpGwf2jAZU/p0oqyhXqJW42gr2ikEGmOrwax3jUIw8BM8Vazo85C7+Iaeydyecib8zuzFjRh8+GNQ2mKEKSu+f8lE/ssXNOJ8olDZwCWqT/qMos8S1Xme9eA6MuKMGrfHHikG5JUB5697YcyyhnvQIj8limUF99ztQtPFrgwnehwDKvOq1388dN6FbfKqeIArioj3lnovpAdTG7egYwVY94AZkrm0gwjR8D5lii6G5o7CkSgnHAO/or2l4RxASRAAn6V3K2i5GH4r4i/OW3bubwwwYtS8c1JZvMAA==.
+        /// </summary>
+        internal static string profileFileSteamV3 {
+            get {
+                return ResourceManager.GetString("profileFileSteamV3", resourceCulture);
             }
         }
     }

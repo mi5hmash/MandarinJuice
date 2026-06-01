@@ -19,7 +19,8 @@ This application can **decrypt and encrypt SaveData files** from various games r
 |Monster Hunter Stories 3: Twisted Reflection|2852190|Steam|
 |Monster Hunter Wilds|2246340|Steam|
 |PRAGMATA|3357650|Steam|
-|Resident Evil 9 Requiem|3764200|Steam|
+|Resident Evil 9 Requiem|3764200|Steam, Epic|
+|Resident Evil 9 Requiem DEMO|4459100|Steam, Epic|
 
 # 🤯 Why was it created :interrobang:
 I wanted to share a SaveData file with a friend, but it isn't possible by default.

@@ -135,7 +135,9 @@
                             <ComboBox 
                                 MaxDropDownHeight="200" 
                                 ItemsSource="{Binding ViewModel.GamingPlatformOptions}"
-                                SelectedItem="{Binding ViewModel.GameProfileManager.GameProfile.Platform, Mode=TwoWay}">
+                                DisplayMemberPath="Value"
+                                SelectedValuePath="Key"
+                                SelectedValue="{Binding ViewModel.GameProfileManager.GameProfile.Platform, Mode=TwoWay}">
                             </ComboBox>
                         </StackPanel>
 

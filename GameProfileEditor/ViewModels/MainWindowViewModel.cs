@@ -10,7 +10,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using MandarinJuiceCore.GameProfile;
-using MandarinJuiceCore.GamingPlatforms;
+using MandarinJuiceCore.GamingPlatformsFactory;
 using MandarinJuiceCore.Helpers;
 using MandarinJuiceCore.Infrastructure;
 using MandarinJuiceCore.Models.DSSS.Mandarin;
@@ -43,7 +43,7 @@ public partial class MainWindowViewModel : ObservableObject
 
     #region GAME_PROFILE
     [ObservableProperty] private GameProfileManager<MandarinGameProfile> _gameProfileManager = new();
-    [ObservableProperty] private MandarinFileFlavor[] _mandarinFileFlavors = Enum.GetValues<MandarinFileFlavor>();
+    [ObservableProperty] private MandarinFileFlavorEnum[] _mandarinFileFlavors = Enum.GetValues<MandarinFileFlavorEnum>();
 
     private const string GameProfileExtension = ".bin";
 
@@ -161,7 +161,7 @@ public partial class MainWindowViewModel : ObservableObject
     #endregion
 
     #region GAMING_PLATFORM
-    [ObservableProperty] private GamingPlatform[] _gamingPlatformOptions = Enum.GetValues<GamingPlatform>();
+    [ObservableProperty] private Dictionary<GamingPlatformEnum, string> _gamingPlatformOptions = GamingPlatformRegistry.GamingPlatformsFriendlyNames;
     #endregion
 
     public MainWindowViewModel()

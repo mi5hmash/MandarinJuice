@@ -1,12 +1,12 @@
-﻿using MandarinJuiceCore.GamingPlatforms;
-using Mi5hmasH.GameProfile;
+﻿using Mi5hmasH.GameProfile;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
+using MandarinJuiceCore.GamingPlatformsFactory;
 using MandarinJuiceCore.Models.DSSS.Mandarin;
 
 namespace MandarinJuiceCore.GameProfile;
 
-public class MandarinGameProfile : IEquatable<MandarinGameProfile>, INotifyPropertyChanged, IGameProfile
+public sealed class MandarinGameProfile : IEquatable<MandarinGameProfile>, INotifyPropertyChanged, IGameProfile
 {
     /// <summary>
     /// Gets or sets metadata information related to the game profile.
@@ -30,7 +30,7 @@ public class MandarinGameProfile : IEquatable<MandarinGameProfile>, INotifyPrope
     /// <summary>
     /// Gets or sets the GamingPlatform.
     /// </summary>
-    public GamingPlatform Platform
+    public GamingPlatformEnum Platform
     {
         get;
         set
@@ -39,7 +39,7 @@ public class MandarinGameProfile : IEquatable<MandarinGameProfile>, INotifyPrope
             field = value;
             OnPropertyChanged(nameof(Platform));
         }
-    } = GamingPlatform.Other;
+    } = GamingPlatformEnum.Other;
 
     /// <summary>
     /// Gets or sets the application identifier associated with this instance.
@@ -100,7 +100,7 @@ public class MandarinGameProfile : IEquatable<MandarinGameProfile>, INotifyPrope
     /// <summary>
     /// Gets or sets the Mandarin File Flavor.
     /// </summary>
-    public MandarinFileFlavor MandarinFileFlavor
+    public MandarinFileFlavorEnum MandarinFileFlavor
     {
         get;
         set
@@ -109,7 +109,7 @@ public class MandarinGameProfile : IEquatable<MandarinGameProfile>, INotifyPrope
             field = value;
             OnPropertyChanged(nameof(MandarinFileFlavor));
         }
-    } = MandarinFileFlavor.Default;
+    } = MandarinFileFlavorEnum.Default;
 
     /// <summary>
     /// Copies the game profile data from the specified object if it is an instance of MandarinGameProfile.
@@ -182,6 +182,6 @@ public class MandarinGameProfile : IEquatable<MandarinGameProfile>, INotifyPrope
 
     // MVVM support
     public event PropertyChangedEventHandler? PropertyChanged;
-    protected void OnPropertyChanged(string propertyName) 
+    private void OnPropertyChanged(string propertyName) 
         => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 }

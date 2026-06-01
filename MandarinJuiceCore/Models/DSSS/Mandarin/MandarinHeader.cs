@@ -2,10 +2,10 @@ using System.Runtime.InteropServices;
 
 namespace MandarinJuiceCore.Models.DSSS.Mandarin;
 
-public class MandarinHeader(MandarinFileFlavor expectedFileFlavor)
+public sealed class MandarinHeader(MandarinFileFlavorEnum expectedFileFlavor)
 {
     public const int Size = 0x10;
-    protected const uint Dsss = 0x5353_5344;
+    private const uint Dsss = 0x5353_5344;
 
     /// <summary>
     /// Readonly buffer

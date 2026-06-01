@@ -1,4 +1,4 @@
-﻿using MandarinJuiceCore.GamingPlatforms;
+﻿using MandarinJuiceCore.GamingPlatformsFactory;
 using MandarinJuiceCore.Helpers;
 using MandarinJuiceCore.Infrastructure;
 using MandarinJuiceCore.Models.DSSS.Mandarin;
@@ -6,7 +6,7 @@ using Mi5hmasH.Logger;
 
 namespace MandarinJuiceCore;
 
-public class Core(SimpleLogger logger, ProgressReporter progressReporter)
+public sealed class Core(SimpleLogger logger, ProgressReporter progressReporter)
 {
     /// <summary>
     /// Gets the MandarinDeencryptor instance used to decrypt Mandarin-encoded data.
@@ -16,7 +16,7 @@ public class Core(SimpleLogger logger, ProgressReporter progressReporter)
     /// <summary>
     /// Holds a flavor of Mandarin file that should be used.
     /// </summary>
-    public MandarinFileFlavor MandarinFileFlavor { get; set; } = MandarinFileFlavor.Default;
+    public MandarinFileFlavorEnum MandarinFileFlavor { get; set; } = MandarinFileFlavorEnum.Default;
 
     /// <summary>
     /// Creates a new ParallelOptions instance configured with the specified cancellation token and an optimal degree of parallelism for the current environment.
@@ -53,11 +53,17 @@ public class Core(SimpleLogger logger, ProgressReporter progressReporter)
         if (filesToProcess.Length == 0) return;
         // DECRYPT
         logger.LogInfo($"Decrypting [{filesToProcess.Length}] files...");
+        // User ID
+        ulong userIdInput;
+        try { userIdInput = gamingPlatform.GetParsedUserIdInput(); }
+        catch (Exception ex)
+        {
+            logger.LogError(ex.Message);
+            return;
+        }
         // Create a new folder in OUTPUT directory
         var outputDir = Directories.GetNewOutputDirectory("decrypted");
         Directory.CreateDirectory(outputDir);
-        // User ID
-        var userIdInput = gamingPlatform.GetParsedUserIdInput();
         // Setup parallel options
         var po = GetParallelOptions(cts);
         // Process files in parallel
@@ -160,11 +166,17 @@ public class Core(SimpleLogger logger, ProgressReporter progressReporter)
         if (filesToProcess.Length == 0) return;
         // ENCRYPT
         logger.LogInfo($"Encrypting [{filesToProcess.Length}] files...");
+        // User ID
+        ulong userIdOutput;
+        try { userIdOutput = gamingPlatform.GetParsedUserIdOutput(); }
+        catch (Exception ex)
+        {
+            logger.LogError(ex.Message);
+            return;
+        }
         // Create a new folder in OUTPUT directory
         var outputDir = Directories.GetNewOutputDirectory("encrypted").AddUserId(gamingPlatform.UserIdOutput);
         Directory.CreateDirectory(outputDir);
-        // User ID
-        var userIdOutput = gamingPlatform.GetParsedUserIdOutput();
         // Setup parallel options
         var po = GetParallelOptions(cts);
         // Process files in parallel
@@ -267,12 +279,25 @@ public class Core(SimpleLogger logger, ProgressReporter progressReporter)
         if (filesToProcess.Length == 0) return;
         // RE-SIGN
         logger.LogInfo($"Re-signing [{filesToProcess.Length}] files...");
+        // Input User ID
+        ulong userIdInput;
+        try { userIdInput = gamingPlatform.GetParsedUserIdInput(); }
+        catch (Exception ex)
+        {
+            logger.LogError(ex.Message);
+            return;
+        }
+        // Output User ID
+        ulong userIdOutput;
+        try { userIdOutput = gamingPlatform.GetParsedUserIdOutput(); }
+        catch (Exception ex)
+        {
+            logger.LogError(ex.Message);
+            return;
+        }
         // Create a new folder in OUTPUT directory
         var outputDir = Directories.GetNewOutputDirectory("resigned").AddUserId(gamingPlatform.UserIdOutput);
         Directory.CreateDirectory(outputDir);
-        // User IDs
-        var userIdInput = gamingPlatform.GetParsedUserIdInput();
-        var userIdOutput = gamingPlatform.GetParsedUserIdOutput();
         // Setup parallel options
         var po = GetParallelOptions(cts);
         // Process files in parallel

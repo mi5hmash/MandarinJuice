@@ -1,6 +1,6 @@
 using MandarinJuiceCore;
 using MandarinJuiceCore.GameProfile;
-using MandarinJuiceCore.GamingPlatforms;
+using MandarinJuiceCore.GamingPlatformsFactory;
 using MandarinJuiceCore.Helpers;
 using MandarinJuiceCore.Infrastructure;
 using MandarinJuiceCore.Models.DSSS.Mandarin;
@@ -13,9 +13,12 @@ public sealed class MandarinJuiceCoreTests : IDisposable
 {
     private readonly Core _core;
     private readonly GameProfileManager<MandarinGameProfile> _gameProfileManager = new();
-    private IGamingPlatform _gamingPlatform = new Other();
+    private IGamingPlatform _gamingPlatform = GamingPlatformRegistry.GetGamingPlatform(GamingPlatformEnum.Other);
     private readonly ITestOutputHelper _output;
-    
+
+    private const string SteamId = "76561197960265729";
+    private const string EpicId = "1234567890abcdef1234567890abcdef";
+
     public MandarinJuiceCoreTests(ITestOutputHelper output)
     {
         _output = output;
@@ -32,15 +35,15 @@ public sealed class MandarinJuiceCoreTests : IDisposable
         _output.WriteLine("CLEANUP");
     }
 
-    private void LoadGameProfile()
+    private void LoadGameProfile(string profileData)
     {
         // Load GameProfile
         _gameProfileManager.SetEncryptor(Keychain.GpMagic);
-        _gameProfileManager.Load(Properties.Resources.profileFile, "profile");
+        _gameProfileManager.Load(profileData, "profile");
         // Copy Mandarin Seed to Deencryptor
         _core.Deencryptor.MandarinSeed = _gameProfileManager.GameProfile.MandarinSeed;
         // Set GamingPlatform
-        _gamingPlatform = GamingPlatformHelper.GetGamingPlatform(_gameProfileManager.GameProfile.Platform);
+        _gamingPlatform = GamingPlatformRegistry.GetGamingPlatform(_gameProfileManager.GameProfile.Platform);
         _gamingPlatform.AppId = _gameProfileManager.GameProfile.AppId ?? "0";
         _gamingPlatform.ParseVariant = _gameProfileManager.GameProfile.ParseVariant;
     }
@@ -117,15 +120,25 @@ public sealed class MandarinJuiceCoreTests : IDisposable
         Assert.True(testResult);
     }
 
-    [Fact]
-    public void DecryptFiles_DoesDecrypt()
+    public static IEnumerable<object[]> DecryptFileTheories =>
+    [
+        ["V1_STEAM",Properties.Resources.profileFileSteamV1, Properties.Resources.encryptedFileSteamV1, SteamId],
+        ["V2_STEAM",Properties.Resources.profileFileSteamV2, Properties.Resources.encryptedFileSteamV2, SteamId],
+        ["V3_STEAM",Properties.Resources.profileFileSteamV3, Properties.Resources.encryptedFileSteamV3, SteamId],
+        ["V1_EPIC", Properties.Resources.profileFileEpicV1, Properties.Resources.encryptedFileEpicV1, EpicId],
+        ["V2_EPIC",Properties.Resources.profileFileEpicV2, Properties.Resources.encryptedFileEpicV2, EpicId]
+    ];
+
+    [Theory]
+    [MemberData(nameof(DecryptFileTheories))]
+    public void DecryptFiles_DoesDecrypt(string variant, string profileData, byte[] data, string userId)
     {
         // Arrange
-        const string userId = "76561197960265729";
-        LoadGameProfile();
+        _output.WriteLine(variant);
+        LoadGameProfile(profileData);
         _gamingPlatform.UserIdInput = userId;
-        var mandarinFile = new MandarinFile(_core.Deencryptor, MandarinFileFlavor.Default);
-        mandarinFile.SetFileData(Properties.Resources.encryptedFile, true);
+        var mandarinFile = new MandarinFile(_core.Deencryptor, MandarinFileFlavorEnum.Default);
+        mandarinFile.SetFileData(data, true);
 
         // Act
         mandarinFile.DecryptFile(_gamingPlatform.GetParsedUserIdInput());
@@ -136,15 +149,14 @@ public sealed class MandarinJuiceCoreTests : IDisposable
     }
 
     [Theory]
-    [InlineData(MandarinFileFlavor.Default)]
-    [InlineData(MandarinFileFlavor.Compressible)]
-    public void EncryptFiles_DoesEncrypt(MandarinFileFlavor flavor)
+    [InlineData(MandarinFileFlavorEnum.Default)]
+    [InlineData(MandarinFileFlavorEnum.Compressible)]
+    public void EncryptFiles_DoesEncrypt(MandarinFileFlavorEnum flavor)
     {
         // Arrange
-        const string userId = "76561197960265729";
-        LoadGameProfile();
-        _gamingPlatform.UserIdInput = userId;
-        _gamingPlatform.UserIdOutput = userId;
+        LoadGameProfile(Properties.Resources.profileFileSteamV1);
+        _gamingPlatform.UserIdInput = SteamId;
+        _gamingPlatform.UserIdOutput = SteamId;
         var mandarinFile = new MandarinFile(_core.Deencryptor, flavor);
         mandarinFile.SetFileData(Properties.Resources.decryptedFile);
 
