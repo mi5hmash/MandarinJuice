@@ -161,7 +161,10 @@ public partial class MainWindowViewModel : ObservableObject
     #endregion
 
     #region GAMING_PLATFORM
-    [ObservableProperty] private Dictionary<GamingPlatformEnum, string> _gamingPlatformOptions = GamingPlatformRegistry.GamingPlatformsFriendlyNames;
+    [ObservableProperty] 
+    private List<KeyValuePair<GamingPlatformEnum, string>> _gamingPlatformOptions = GamingPlatformRegistry.GamingPlatformsFriendlyNames
+        .OrderBy(x => x.Value)
+        .ToList();
     #endregion
 
     public MainWindowViewModel()

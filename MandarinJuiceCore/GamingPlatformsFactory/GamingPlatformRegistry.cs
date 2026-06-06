@@ -5,36 +5,34 @@ namespace MandarinJuiceCore.GamingPlatformsFactory;
 
 public static class GamingPlatformRegistry
 {
-    private static readonly Dictionary<GamingPlatformEnum, IGamingPlatform> GamingPlatforms;
-    public static readonly Dictionary<GamingPlatformEnum, string> GamingPlatformsFriendlyNames;
+    private static readonly Dictionary<GamingPlatformEnum, IGamingPlatform> GamingPlatforms = new();
+    public static readonly Dictionary<GamingPlatformEnum, string> GamingPlatformsFriendlyNames = new();
 
     static GamingPlatformRegistry()
     {
-        GamingPlatforms = new Dictionary<GamingPlatformEnum, IGamingPlatform>();
-        GamingPlatformsFriendlyNames = new Dictionary<GamingPlatformEnum, string>();
-
-        var ns = typeof(Default).Namespace;
+        var ns = typeof(Default).Namespace!;
         var baseType = typeof(IGamingPlatform);
-        const bool inherit = false;
 
         var elements = AppDomain.CurrentDomain
             .GetAssemblies()
             .SelectMany(a => a.GetTypes())
-            .Where(t => 
-                t.Namespace == ns &&
-                !t.IsAbstract &&
-                baseType.IsAssignableFrom(t) &&
-                t.GetCustomAttribute<GamingPlatformTypeAttribute>(inherit) != null)
             .Select(t => new
             {
                 Type = t,
-                Attribute = t.GetCustomAttribute<GamingPlatformTypeAttribute>(inherit)
-            });
+                Attribute = t.GetCustomAttribute<GamingPlatformTypeAttribute>(false)
+            })
+            .Where(x =>
+                x.Type.Namespace != null &&
+                x.Type.Namespace.StartsWith(ns) &&
+                x.Attribute != null &&
+                !x.Type.IsAbstract &&
+                baseType.IsAssignableFrom(x.Type));
 
         foreach (var element in elements)
         {
             var instance = (IGamingPlatform)Activator.CreateInstance(element.Type)!;
-            GamingPlatforms[element.Attribute!.GamingPlatformType] = instance;
+            if (!GamingPlatforms.TryAdd(element.Attribute!.GamingPlatformType, instance))
+                throw new InvalidOperationException($"Duplicate GamingPlatform '{element.Attribute!.GamingPlatformType}' in {element.Type.FullName}");
             GamingPlatformsFriendlyNames[element.Attribute.GamingPlatformType] = element.Attribute.FriendlyName;
         }
     }
