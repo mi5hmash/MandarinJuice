@@ -66,7 +66,7 @@ public sealed class MandarinJuiceCoreTests : IDisposable
         {
             testResult = false;
         }
-        Directory.Delete(tempDir);
+        Directory.Delete(tempDir, true);
 
         // Assert
         Assert.True(testResult);
@@ -90,7 +90,7 @@ public sealed class MandarinJuiceCoreTests : IDisposable
         {
             testResult = false;
         }
-        Directory.Delete(tempDir);
+        Directory.Delete(tempDir, true);
 
         // Assert
         Assert.True(testResult);
@@ -114,7 +114,7 @@ public sealed class MandarinJuiceCoreTests : IDisposable
         {
             testResult = false;
         }
-        Directory.Delete(tempDir);
+        Directory.Delete(tempDir, true);
 
         // Assert
         Assert.True(testResult);
@@ -145,7 +145,7 @@ public sealed class MandarinJuiceCoreTests : IDisposable
         var resultData = mandarinFile.Data.AsSpan();
 
         // Assert
-        Assert.Equal((ReadOnlySpan<byte>)resultData, Properties.Resources.decryptedFile);
+        Assert.Equal(Properties.Resources.decryptedFile, (ReadOnlySpan<byte>)resultData);
     }
 
     [Theory]
@@ -166,6 +166,6 @@ public sealed class MandarinJuiceCoreTests : IDisposable
         var resultData = mandarinFile.Data.AsSpan();
 
         // Assert
-        Assert.Equal((ReadOnlySpan<byte>)resultData, Properties.Resources.decryptedFile);
+        Assert.Equal(Properties.Resources.decryptedFile, (ReadOnlySpan<byte>)resultData);
     }
 }

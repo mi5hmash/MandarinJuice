@@ -49,7 +49,7 @@ public sealed class Core(SimpleLogger logger, ProgressReporter progressReporter)
     public void DecryptFiles(string inputDir, IGamingPlatform gamingPlatform, CancellationTokenSource cts)
     {
         // GET FILES TO PROCESS
-        var filesToProcess = Directory.GetFiles(inputDir, $"*{MandarinFile.FileExtension}", SearchOption.TopDirectoryOnly);
+        var filesToProcess = SaveDataFileIo.GetFiles(inputDir);
         if (filesToProcess.Length == 0) return;
         // DECRYPT
         logger.LogInfo($"Decrypting [{filesToProcess.Length}] files...");
@@ -162,7 +162,7 @@ public sealed class Core(SimpleLogger logger, ProgressReporter progressReporter)
     public void EncryptFiles(string inputDir, IGamingPlatform gamingPlatform, CancellationTokenSource cts)
     {
         // GET FILES TO PROCESS
-        var filesToProcess = Directory.GetFiles(inputDir, $"*{MandarinFile.FileExtension}", SearchOption.TopDirectoryOnly);
+        var filesToProcess = SaveDataFileIo.GetFiles(inputDir);
         if (filesToProcess.Length == 0) return;
         // ENCRYPT
         logger.LogInfo($"Encrypting [{filesToProcess.Length}] files...");
@@ -275,7 +275,7 @@ public sealed class Core(SimpleLogger logger, ProgressReporter progressReporter)
     public void ResignFiles(string inputDir, IGamingPlatform gamingPlatform, CancellationTokenSource cts)
     {
         // GET FILES TO PROCESS
-        var filesToProcess = Directory.GetFiles(inputDir, $"*{MandarinFile.FileExtension}", SearchOption.TopDirectoryOnly);
+        var filesToProcess = SaveDataFileIo.GetFiles(inputDir);
         if (filesToProcess.Length == 0) return;
         // RE-SIGN
         logger.LogInfo($"Re-signing [{filesToProcess.Length}] files...");
@@ -404,7 +404,7 @@ public sealed class Core(SimpleLogger logger, ProgressReporter progressReporter)
     public bool BruteforceUserId(string inputDir, IGamingPlatform gamingPlatform, CancellationTokenSource cts)
     {
         // GET FILES TO PROCESS
-        var filesToProcess = Directory.GetFiles(inputDir, $"*{MandarinFile.FileExtension}", SearchOption.TopDirectoryOnly);
+        var filesToProcess = SaveDataFileIo.GetFiles(inputDir);
         if (filesToProcess.Length == 0) return false;
         // BRUTEFORCE
         var fileName = Path.GetFileName(filesToProcess[0]);
