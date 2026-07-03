@@ -1,11 +1,11 @@
 using MandarinJuiceCore;
 using MandarinJuiceCore.GameProfile;
 using MandarinJuiceCore.GamingPlatformsFactory;
-using MandarinJuiceCore.Helpers;
 using MandarinJuiceCore.Infrastructure;
 using MandarinJuiceCore.Models.DSSS.Mandarin;
 using Mi5hmasH.GameProfile;
 using Mi5hmasH.Logger;
+using Mi5hmasH.Progress;
 
 namespace QualityControl.xUnit;
 

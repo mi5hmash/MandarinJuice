@@ -2,7 +2,7 @@
 using System.Windows.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using MandarinJuiceCore.Helpers;
+using Mi5hmasH.Progress;
 
 namespace MandarinJuiceWpf.Helpers;
 

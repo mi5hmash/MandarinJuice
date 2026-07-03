@@ -1,14 +1,22 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using MandarinJuiceCore;
+using MandarinJuiceCore.GameProfile;
+using MandarinJuiceCore.GamingPlatformsFactory;
+using MandarinJuiceCore.GamingPlatformsFactory.Platforms;
+using MandarinJuiceCore.Infrastructure;
 using MandarinJuiceWpf.Fonts;
+using MandarinJuiceWpf.Helpers;
 using MandarinJuiceWpf.Settings;
 using Mi5hmasH.AppInfo;
 using Mi5hmasH.AppSettings;
-using Mi5hmasH.AppSettings.Flavors;
+using Mi5hmasH.AppSettings.FlavorsFactory.Flavors;
 using Mi5hmasH.GameProfile;
 using Mi5hmasH.Logger;
+using Mi5hmasH.Logger.Enums;
+using Mi5hmasH.Logger.LogProvidersFactory.LogProviders;
 using Mi5hmasH.Logger.Models;
-using Mi5hmasH.Logger.Providers;
+using Mi5hmasH.Progress;
 using Microsoft.Win32;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -16,13 +24,6 @@ using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Media;
 using System.Windows;
-using MandarinJuiceCore;
-using MandarinJuiceCore.GameProfile;
-using MandarinJuiceCore.GamingPlatformsFactory;
-using MandarinJuiceCore.GamingPlatformsFactory.Platforms;
-using MandarinJuiceCore.Helpers;
-using MandarinJuiceCore.Infrastructure;
-using MandarinJuiceWpf.Helpers;
 
 namespace MandarinJuiceWpf.ViewModels;
 
@@ -76,7 +77,7 @@ public partial class MainWindowViewModel : ObservableValidator
         AppDomain.CurrentDomain.UnhandledException += (_, e) =>
         {
             if (e.ExceptionObject is not Exception exception) return;
-            var logEntry = new LogEntry(SimpleLogger.LogSeverity.Critical, $"Unhandled Exception: {exception}");
+            var logEntry = new LogEntry(LogSeverityEnum.Critical, $"Unhandled Exception: {exception}");
             fileLogProvider.Log(logEntry);
             fileLogProvider.Flush();
         };
@@ -110,11 +111,16 @@ public partial class MainWindowViewModel : ObservableValidator
     [ObservableProperty]
     [NotifyDataErrorInfo]
     [Required]
-    private string _inputFolderPath = MyAppInfo.RootPath;
-    
+    private string _inputFolderPath = MyAppInfo.RootPath.TrimDirectorySeparator();
+
     partial void OnInputFolderPathChanged(string value)
     {
-        if (Directory.Exists(value)) return;
+        if (Directory.Exists(value))
+        {
+            value = value.TrimDirectorySeparator();
+            _inputFolderPath = value;
+            return;
+        }
         if (File.Exists(value))
         {
             _inputFolderPath = Path.GetDirectoryName(value) ?? string.Empty;

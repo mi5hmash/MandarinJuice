@@ -11,10 +11,10 @@ using System.Windows.Data;
 using System.Windows.Input;
 using MandarinJuiceCore.GameProfile;
 using MandarinJuiceCore.GamingPlatformsFactory;
-using MandarinJuiceCore.Helpers;
 using MandarinJuiceCore.Infrastructure;
 using MandarinJuiceCore.Models.DSSS.Mandarin;
 using MandarinJuiceWpf.Fonts;
+using Mi5hmasH.Progress;
 
 namespace GameProfileEditor.ViewModels;
 

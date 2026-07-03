@@ -1,7 +1,7 @@
 ﻿<Application x:Class="GameProfileEditor.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:c="clr-namespace:Mi5hmasH.Utilities.Converters;assembly=Mi5hmasH.WpfHelper"
+             xmlns:c="clr-namespace:Mi5hmasH.ConvertersWpf;assembly=Mi5hmasH.ConvertersWpf"
              StartupUri="/Views/Windows/MainWindow.xaml">
     <Application.Resources>
         <ResourceDictionary>

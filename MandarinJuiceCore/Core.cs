@@ -3,6 +3,7 @@ using MandarinJuiceCore.Helpers;
 using MandarinJuiceCore.Infrastructure;
 using MandarinJuiceCore.Models.DSSS.Mandarin;
 using Mi5hmasH.Logger;
+using Mi5hmasH.Progress;
 
 namespace MandarinJuiceCore;
 
@@ -31,6 +32,14 @@ public sealed class Core(SimpleLogger logger, ProgressReporter progressReporter)
         };
 
     /// <summary>
+    /// Marks the progress reporting as complete by reporting 100% progress.
+    /// </summary>
+    /// <param name="progressTracker">The progress tracker used to report progress.</param>
+    /// <param name="errorCounter">The error counter used to report errors.</param>
+    private void LogAllTasksCompleted(ProgressTracker progressTracker, ErrorCounter errorCounter)
+        => logger.LogInfo($"{progressTracker} All tasks completed. {errorCounter}");
+
+    /// <summary>
     /// Asynchronously decrypts all files in the specified input directory using the provided gaming platform context.
     /// </summary>
     /// <param name="inputDir">The path to the directory containing the files to decrypt.</param>
@@ -49,10 +58,18 @@ public sealed class Core(SimpleLogger logger, ProgressReporter progressReporter)
     public void DecryptFiles(string inputDir, IGamingPlatform gamingPlatform, CancellationTokenSource cts)
     {
         // GET FILES TO PROCESS
-        var filesToProcess = SaveDataFileIo.GetFiles(inputDir);
-        if (filesToProcess.Length == 0) return;
+        string[] filesToProcess;
+        try { filesToProcess = SaveDataFileIo.GetFiles(inputDir); }
+        catch (Exception ex)
+        {
+            logger.LogWarning(ex.Message);
+            return;
+        }
+        // INITIALIZE PROGRESS TRACKER
+        var progressTracker = new ProgressTracker(filesToProcess.Length);
+        var errorCounter = new ErrorCounter(logger);
         // DECRYPT
-        logger.LogInfo($"Decrypting [{filesToProcess.Length}] files...");
+        logger.LogInfo($"Decrypting [{progressTracker.Total}] files...");
         // User ID
         ulong userIdInput;
         try { userIdInput = gamingPlatform.GetParsedUserIdInput(); }
@@ -67,7 +84,6 @@ public sealed class Core(SimpleLogger logger, ProgressReporter progressReporter)
         // Setup parallel options
         var po = GetParallelOptions(cts);
         // Process files in parallel
-        var progress = 0;
         try
         {
             Parallel.For((long)0, filesToProcess.Length, po, (ctr, _) =>
@@ -82,8 +98,8 @@ public sealed class Core(SimpleLogger logger, ProgressReporter progressReporter)
                     try { data = File.ReadAllBytes(filesToProcess[ctr]); }
                     catch (Exception ex)
                     {
-                        logger.LogError($"[{progress}/{filesToProcess.Length}] Failed to read the [{fileName}] file: {ex}", group);
-                        break; // Skip to the next file
+                        errorCounter.AddError($"{progressTracker} Failed to read the [{fileName}] file: {ex}", group);
+                        break;
                     }
                     // Process file data
                     var mandarinFile = new MandarinFile(Deencryptor, MandarinFileFlavor);
@@ -92,25 +108,25 @@ public sealed class Core(SimpleLogger logger, ProgressReporter progressReporter)
                         mandarinFile.SetFileData(data, true);
                         if (!mandarinFile.IsEncrypted)
                         {
-                            logger.LogWarning($"[{progress}/{filesToProcess.Length}] The [{fileName}] file is not encrypted, skipping...", group);
-                            break; // Skip to the next file
+                            errorCounter.AddWarning($"{progressTracker} The [{fileName}] file is not encrypted, skipping...", group);
+                            break;
                         }
                     }
                     catch (Exception ex)
                     {
-                        logger.LogError($"[{progress}/{filesToProcess.Length}] Failed to process the [{fileName}] file data: {ex}", group);
-                        break; // Skip to the next file
+                        errorCounter.AddError($"{progressTracker} Failed to process the [{fileName}] file data: {ex}", group);
+                        break;
                     }
                     // Try to decrypt file data
                     try
                     {
-                        logger.LogInfo($"[{progress}/{filesToProcess.Length}] Decrypting the [{fileName}] file...", group);
+                        logger.LogInfo($"{progressTracker} Decrypting the [{fileName}] file...", group);
                         mandarinFile.DecryptFile(userIdInput);
                     }
                     catch (Exception ex)
                     {
-                        logger.LogError($"Failed to decrypt the file: {ex.Message}", group);
-                        break; // Skip to the next file
+                        errorCounter.AddError($"{progressTracker} Failed to decrypt the file: {ex.Message}", group);
+                        break;
                     }
                     // Try to save the decrypted file data
                     try
@@ -121,25 +137,24 @@ public sealed class Core(SimpleLogger logger, ProgressReporter progressReporter)
                     }
                     catch (Exception ex)
                     {
-                        logger.LogError($"Failed to save the file: {ex}", group);
-                        break; // Skip to the next file
+                        errorCounter.AddError($"{progressTracker}Failed to save the file: {ex}", group);
+                        break;
                     }
-                    logger.LogInfo($"[{progress}/{filesToProcess.Length}] Decrypted the [{fileName}] file.", group);
+                    logger.LogInfo($"{progressTracker} Decrypted the [{fileName}] file.", group);
                     break;
                 }
-                Interlocked.Increment(ref progress);
-                progressReporter.Report((int)((double)progress / filesToProcess.Length * 100));
+                progressTracker.Increment();
+                progressReporter.Report(progressTracker.Percentage);
             });
-            logger.LogInfo($"[{progress}/{filesToProcess.Length}] All tasks completed.");
+            LogAllTasksCompleted(progressTracker, errorCounter);
         }
         catch (OperationCanceledException ex)
         {
-            logger.LogWarning(ex.Message);
+            errorCounter.AddWarning(ex.Message);
         }
         finally
         {
-            // Ensure progress is set to 100% at the end
-            progressReporter.Report(100);
+            progressReporter.Complete();
         }
     }
 
@@ -162,10 +177,18 @@ public sealed class Core(SimpleLogger logger, ProgressReporter progressReporter)
     public void EncryptFiles(string inputDir, IGamingPlatform gamingPlatform, CancellationTokenSource cts)
     {
         // GET FILES TO PROCESS
-        var filesToProcess = SaveDataFileIo.GetFiles(inputDir);
-        if (filesToProcess.Length == 0) return;
+        string[] filesToProcess;
+        try { filesToProcess = SaveDataFileIo.GetFiles(inputDir); }
+        catch (Exception ex)
+        {
+            logger.LogWarning(ex.Message);
+            return;
+        }
+        // INITIALIZE PROGRESS TRACKER
+        var progressTracker = new ProgressTracker(filesToProcess.Length);
+        var errorCounter = new ErrorCounter(logger);
         // ENCRYPT
-        logger.LogInfo($"Encrypting [{filesToProcess.Length}] files...");
+        logger.LogInfo($"Encrypting [{progressTracker.Total}] files...");
         // User ID
         ulong userIdOutput;
         try { userIdOutput = gamingPlatform.GetParsedUserIdOutput(); }
@@ -180,7 +203,6 @@ public sealed class Core(SimpleLogger logger, ProgressReporter progressReporter)
         // Setup parallel options
         var po = GetParallelOptions(cts);
         // Process files in parallel
-        var progress = 0;
         try
         {
             Parallel.For((long)0, filesToProcess.Length, po, (ctr, _) =>
@@ -195,8 +217,8 @@ public sealed class Core(SimpleLogger logger, ProgressReporter progressReporter)
                     try { data = File.ReadAllBytes(filesToProcess[ctr]); }
                     catch (Exception ex)
                     {
-                        logger.LogError($"[{progress}/{filesToProcess.Length}] Failed to read the [{fileName}] file: {ex}", group);
-                        break; // Skip to the next file
+                        errorCounter.AddError($"{progressTracker} Failed to read the [{fileName}] file: {ex}", group);
+                        break;
                     }
                     // Process file data
                     var mandarinFile = new MandarinFile(Deencryptor, MandarinFileFlavor);
@@ -205,25 +227,25 @@ public sealed class Core(SimpleLogger logger, ProgressReporter progressReporter)
                         mandarinFile.SetFileData(data);
                         if (mandarinFile.IsEncrypted)
                         {
-                            logger.LogWarning($"[{progress}/{filesToProcess.Length}] The [{fileName}] file is already encrypted, skipping...", group);
-                            break; // Skip to the next file
+                            errorCounter.AddWarning($"{progressTracker} The [{fileName}] file is already encrypted, skipping...", group);
+                            break;
                         }
                     }
                     catch (Exception ex)
                     {
-                        logger.LogError($"[{progress}/{filesToProcess.Length}] Failed to process the [{fileName}] file data: {ex}", group);
-                        break; // Skip to the next file
+                        errorCounter.AddError($"{progressTracker} Failed to process the [{fileName}] file data: {ex}", group);
+                        break;
                     }
                     // Try to encrypt file data
                     try
                     {
-                        logger.LogInfo($"[{progress}/{filesToProcess.Length}] Encrypting the [{fileName}] file...", group);
+                        logger.LogInfo($"{progressTracker} Encrypting the [{fileName}] file...", group);
                         mandarinFile.EncryptFile(userIdOutput);
                     }
                     catch (Exception ex)
                     {
-                        logger.LogError($"Failed to encrypt the file: {ex.Message}", group);
-                        break; // Skip to the next file
+                        errorCounter.AddError($"{progressTracker} Failed to encrypt the file: {ex.Message}", group);
+                        break;
                     }
                     // Try to save the encrypted file data
                     try
@@ -234,25 +256,24 @@ public sealed class Core(SimpleLogger logger, ProgressReporter progressReporter)
                     }
                     catch (Exception ex)
                     {
-                        logger.LogError($"Failed to save the file: {ex}", group);
-                        break; // Skip to the next file
+                        errorCounter.AddError($"{progressTracker} Failed to save the file: {ex}", group);
+                        break;
                     }
-                    logger.LogInfo($"[{progress}/{filesToProcess.Length}] Encrypted the [{fileName}] file.", group);
+                    logger.LogInfo($"{progressTracker} Encrypted the [{fileName}] file.", group);
                     break;
                 }
-                Interlocked.Increment(ref progress);
-                progressReporter.Report((int)((double)progress / filesToProcess.Length * 100));
+                progressTracker.Increment();
+                progressReporter.Report(progressTracker.Percentage);
             });
-            logger.LogInfo($"[{progress}/{filesToProcess.Length}] All tasks completed.");
+            LogAllTasksCompleted(progressTracker, errorCounter);
         }
         catch (OperationCanceledException ex)
         {
-            logger.LogWarning(ex.Message);
+            errorCounter.AddWarning(ex.Message);
         }
         finally
         {
-            // Ensure progress is set to 100% at the end
-            progressReporter.Report(100);
+            progressReporter.Complete();
         }
     }
 
@@ -275,10 +296,18 @@ public sealed class Core(SimpleLogger logger, ProgressReporter progressReporter)
     public void ResignFiles(string inputDir, IGamingPlatform gamingPlatform, CancellationTokenSource cts)
     {
         // GET FILES TO PROCESS
-        var filesToProcess = SaveDataFileIo.GetFiles(inputDir);
-        if (filesToProcess.Length == 0) return;
+        string[] filesToProcess;
+        try { filesToProcess = SaveDataFileIo.GetFiles(inputDir); }
+        catch (Exception ex)
+        {
+            logger.LogWarning(ex.Message);
+            return;
+        }
+        // INITIALIZE PROGRESS TRACKER
+        var progressTracker = new ProgressTracker(filesToProcess.Length);
+        var errorCounter = new ErrorCounter(logger);
         // RE-SIGN
-        logger.LogInfo($"Re-signing [{filesToProcess.Length}] files...");
+        logger.LogInfo($"Re-signing [{progressTracker.Total}] files...");
         // Input User ID
         ulong userIdInput;
         try { userIdInput = gamingPlatform.GetParsedUserIdInput(); }
@@ -301,7 +330,6 @@ public sealed class Core(SimpleLogger logger, ProgressReporter progressReporter)
         // Setup parallel options
         var po = GetParallelOptions(cts);
         // Process files in parallel
-        var progress = 0;
         try
         {
             Parallel.For((long)0, filesToProcess.Length, po, (ctr, _) =>
@@ -316,41 +344,41 @@ public sealed class Core(SimpleLogger logger, ProgressReporter progressReporter)
                     try { data = File.ReadAllBytes(filesToProcess[ctr]); }
                     catch (Exception ex)
                     {
-                        logger.LogError($"[{progress}/{filesToProcess.Length}] Failed to read the [{fileName}] file: {ex}", group);
-                        break; // Skip to the next file
+                        errorCounter.AddError($"{progressTracker} Failed to read the [{fileName}] file: {ex}", group);
+                        break;
                     }
                     // Process file data
                     var mandarinFile = new MandarinFile(Deencryptor, MandarinFileFlavor);
                     try { mandarinFile.SetFileData(data); }
                     catch (Exception ex)
                     {
-                        logger.LogError($"[{progress}/{filesToProcess.Length}] Failed to process the [{fileName}] file data: {ex}", group);
-                        break; // Skip to the next file
+                        errorCounter.AddError($"{progressTracker} Failed to process the [{fileName}] file data: {ex}", group);
+                        break;
                     }
                     // Try to decrypt file data if encrypted
                     if (mandarinFile.IsEncrypted)
                     {
                         try
                         {
-                            logger.LogInfo($"[{progress}/{filesToProcess.Length}] Decrypting the [{fileName}] file...", group);
+                            logger.LogInfo($"{progressTracker} Decrypting the [{fileName}] file...", group);
                             mandarinFile.DecryptFile(userIdInput);
                         }
                         catch (Exception ex)
                         {
-                            logger.LogError($"Failed to decrypt the file: {ex.Message}", group);
-                            break; // Skip to the next file
+                            errorCounter.AddError($"{progressTracker} Failed to decrypt the file: {ex.Message}", group);
+                            break;
                         }
                     }
                     // Try to encrypt file data
                     try
                     {
-                        logger.LogInfo($"[{progress}/{filesToProcess.Length}] Encrypting the [{fileName}] file...", group);
+                        logger.LogInfo($"{progressTracker} Encrypting the [{fileName}] file...", group);
                         mandarinFile.EncryptFile(userIdOutput);
                     }
                     catch (Exception ex)
                     {
-                        logger.LogError($"Failed to encrypt the file: {ex.Message}", group);
-                        break; // Skip to the next file
+                        errorCounter.AddError($"{progressTracker} Failed to encrypt the file: {ex.Message}", group);
+                        break;
                     }
                     // Try to save the encrypted file data
                     try
@@ -361,25 +389,24 @@ public sealed class Core(SimpleLogger logger, ProgressReporter progressReporter)
                     }
                     catch (Exception ex)
                     {
-                        logger.LogError($"Failed to save the file: {ex}", group);
-                        break; // Skip to the next file
+                        errorCounter.AddError($"{progressTracker} Failed to save the file: {ex}", group);
+                        break;
                     }
-                    logger.LogInfo($"[{progress}/{filesToProcess.Length}] Re-signed the [{fileName}] file.", group);
+                    logger.LogInfo($"{progressTracker} Re-signed the [{fileName}] file.", group);
                     break;
                 }
-                Interlocked.Increment(ref progress);
-                progressReporter.Report((int)((double)progress / filesToProcess.Length * 100));
+                progressTracker.Increment();
+                progressReporter.Report(progressTracker.Percentage);
             });
-            logger.LogInfo($"[{progress}/{filesToProcess.Length}] All tasks completed.");
+            LogAllTasksCompleted(progressTracker, errorCounter);
         }
         catch (OperationCanceledException ex)
         {
-            logger.LogWarning(ex.Message);
+            errorCounter.AddWarning(ex.Message);
         }
         finally
         {
-            // Ensure progress is set to 100% at the end
-            progressReporter.Report(100);
+            progressReporter.Complete();
         }
     }
 
@@ -404,8 +431,13 @@ public sealed class Core(SimpleLogger logger, ProgressReporter progressReporter)
     public bool BruteforceUserId(string inputDir, IGamingPlatform gamingPlatform, CancellationTokenSource cts)
     {
         // GET FILES TO PROCESS
-        var filesToProcess = SaveDataFileIo.GetFiles(inputDir);
-        if (filesToProcess.Length == 0) return false;
+        string[] filesToProcess;
+        try { filesToProcess = SaveDataFileIo.GetFiles(inputDir); }
+        catch (Exception ex)
+        {
+            logger.LogWarning(ex.Message);
+            return false;
+        }
         // BRUTEFORCE
         var fileName = Path.GetFileName(filesToProcess[0]);
         // Try to read file data
@@ -467,8 +499,7 @@ public sealed class Core(SimpleLogger logger, ProgressReporter progressReporter)
         }
         finally
         {
-            // Ensure progress is set to 100% at the end
-            progressReporter.Report(100);
+            progressReporter.Complete();
         }
 
         return result;

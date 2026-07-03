@@ -19,15 +19,25 @@ public static class Directories
     public static string GetNewOutputDirectory(string action)
         => Path.Combine(Output, $"{DateTime.Now:yyyy-MM-dd_HHmmssfff}_{action}");
 
-    /// <summary>
-    /// Combines the specified output directory path with a user identifier to create a user-specific subdirectory path.
-    /// </summary>
-    /// <param name="outputDirectory">The base directory path where user-specific subdirectories will be created.</param>
-    /// <param name="userId">The user identifier to append to the output directory path.</param>
-    /// <returns>A string representing the combined path of the output directory and user identifier.</returns>
-    public static string AddUserId(this string outputDirectory, string userId)
-        => Path.Combine(outputDirectory, userId);
-    
+    /// <param name="path">A path to process.</param>
+    extension(string path)
+    {
+        /// <summary>
+        /// Combines the specified output directory path with a user identifier to create a user-specific subdirectory path.
+        /// </summary>
+        /// <param name="userId">The user identifier to append to the output directory path.</param>
+        /// <returns>A string representing the combined path of the output directory and user identifier.</returns>
+        public string AddUserId(string userId)
+            => Path.Combine(path, userId);
+
+        /// <summary>
+        /// Removes trailing directory separator characters from a path.
+        /// </summary>
+        /// <returns>The path without trailing directory separators.</returns>
+        public string TrimDirectorySeparator()
+            => path.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+    }
+
     /// <summary>
     /// Opens the specified directory in the system's default file explorer, if the directory exists.
     /// </summary>

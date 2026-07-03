@@ -1,14 +1,15 @@
 ﻿using MandarinJuiceCore;
 using MandarinJuiceCore.GameProfile;
 using MandarinJuiceCore.GamingPlatformsFactory;
-using MandarinJuiceCore.Helpers;
 using MandarinJuiceCore.Infrastructure;
 using Mi5hmasH.AppInfo;
 using Mi5hmasH.ConsoleHelper;
 using Mi5hmasH.GameProfile;
 using Mi5hmasH.Logger;
+using Mi5hmasH.Logger.Enums;
+using Mi5hmasH.Logger.LogProvidersFactory.LogProviders;
 using Mi5hmasH.Logger.Models;
-using Mi5hmasH.Logger.Providers;
+using Mi5hmasH.Progress;
 
 #region SETUP
 
@@ -34,7 +35,7 @@ logger.AddProvider(fileLogProvider);
 AppDomain.CurrentDomain.UnhandledException += (_, e) =>
 {
     if (e.ExceptionObject is not Exception exception) return;
-    var logEntry = new LogEntry(SimpleLogger.LogSeverity.Critical, $"Unhandled Exception: {exception}");
+    var logEntry = new LogEntry(LogSeverityEnum.Critical, $"Unhandled Exception: {exception}");
     fileLogProvider.Log(logEntry);
     fileLogProvider.Flush();
 };
@@ -158,7 +159,7 @@ string GetValidatedInputRootPath()
     if (File.Exists(inputRootPath)) inputRootPath = Path.GetDirectoryName(inputRootPath);
     return !Directory.Exists(inputRootPath)
         ? throw new DirectoryNotFoundException($"The provided path '{inputRootPath}' is not a valid directory or does not exist.")
-        : inputRootPath;
+        : inputRootPath.TrimDirectorySeparator();
 }
 
 void LoadGameProfile()
@@ -184,7 +185,7 @@ void LoadGameProfile()
 
 async Task DecryptAll()
 {
-    var cts = new CancellationTokenSource();
+    using var cts = new CancellationTokenSource();
     arguments.TryGetValue("-u", out var userId);
     if (string.IsNullOrEmpty(userId))
         throw new ArgumentException("Input User ID is missing.");
@@ -194,12 +195,11 @@ async Task DecryptAll()
     gamingPlatform.UserIdInput = userId;
     // Decrypt Files
     await core.DecryptFilesAsync(inputRootPath, gamingPlatform, cts);
-    cts.Dispose();
 }
 
 async Task EncryptAll()
 {
-    var cts = new CancellationTokenSource();
+    using var cts = new CancellationTokenSource();
     arguments.TryGetValue("-u", out var userId);
     if (string.IsNullOrEmpty(userId))
         throw new ArgumentException("Output User ID is missing.");
@@ -209,12 +209,11 @@ async Task EncryptAll()
     gamingPlatform.UserIdOutput = userId;
     // Encrypt Files
     await core.EncryptFilesAsync(inputRootPath, gamingPlatform, cts);
-    cts.Dispose();
 }
 
 async Task ResignAll()
 {
-    var cts = new CancellationTokenSource();
+    using var cts = new CancellationTokenSource();
     arguments.TryGetValue("-uI", out var userIdInput);
     if (string.IsNullOrEmpty(userIdInput))
         throw new ArgumentException("Input User ID is missing.");
@@ -228,17 +227,15 @@ async Task ResignAll()
     gamingPlatform.UserIdOutput = userIdOutput;
     // Re-sign Files
     await core.ResignFilesAsync(inputRootPath, gamingPlatform, cts);
-    cts.Dispose();
 }
 
 async Task BruteforceFirst()
 {
-    var cts = new CancellationTokenSource();
+    using var cts = new CancellationTokenSource();
     var inputRootPath = GetValidatedInputRootPath();
     LoadGameProfile();
     // Bruteforce first file in the input directory
     await core.BruteforceUserIdAsync(inputRootPath, gamingPlatform, cts);
-    cts.Dispose();
 }
 
 #endregion
