@@ -52,13 +52,17 @@ public partial class MainWindowViewModel : ObservableValidator
     #endregion
 
     #region UI_STATE
-    [ObservableProperty] private bool _isBusy;
-    [ObservableProperty] private bool _isAbortAllowed;
+    [ObservableProperty] 
+    public partial bool IsBusy { get; set; }
+    [ObservableProperty] 
+    public partial bool IsAbortAllowed { get; set; }
     #endregion
 
     #region PROGRESS_REPORTER
-    [ObservableProperty] private int _progressValue;
-    [ObservableProperty] private string _progressText = "Loading...";
+    [ObservableProperty] 
+    public partial int ProgressValue { get; set; }
+    [ObservableProperty] 
+    public partial string ProgressText { get; set; } = "Loading...";
     private readonly ProgressReporter _progressReporter;
     #endregion
 
@@ -91,13 +95,13 @@ public partial class MainWindowViewModel : ObservableValidator
     [NotifyDataErrorInfo]
     [RegularExpression("^[0-9A-Fa-f]+$", ErrorMessage = "Only hexadecimal characters are allowed.")]
     [Required]
-    private string _userIdInput = "0";
+    public partial string UserIdInput { get; set; } = "0";
 
     [ObservableProperty]
     [NotifyDataErrorInfo]
     [RegularExpression("^[0-9A-Fa-f]+$", ErrorMessage = "Only hexadecimal characters are allowed.")]
     [Required]
-    private string _userIdOutput = "0";
+    public partial string UserIdOutput { get; set; } = "0";
 
     [RelayCommand]
     private void SwapUserIds()
@@ -111,24 +115,24 @@ public partial class MainWindowViewModel : ObservableValidator
     [ObservableProperty]
     [NotifyDataErrorInfo]
     [Required]
-    private string _inputFolderPath = MyAppInfo.RootPath.TrimDirectorySeparator();
+    public partial string InputFolderPath { get; set; } = MyAppInfo.RootPath.TrimDirectorySeparator();
 
     partial void OnInputFolderPathChanged(string value)
     {
         if (Directory.Exists(value))
         {
             value = value.TrimDirectorySeparator();
-            _inputFolderPath = value;
+            InputFolderPath = value;
             return;
         }
         if (File.Exists(value))
         {
-            _inputFolderPath = Path.GetDirectoryName(value) ?? string.Empty;
+            InputFolderPath = Path.GetDirectoryName(value) ?? string.Empty;
             _progressReporter.Report("Input Folder Path is valid.");
             return;
         }
         _progressReporter.Report("Invalid Input Folder Path!");
-        _inputFolderPath = string.Empty;
+        InputFolderPath = string.Empty;
     }
 
     [RelayCommand]
@@ -180,12 +184,16 @@ public partial class MainWindowViewModel : ObservableValidator
 
     #region GAME_PROFILE
     // GameProfile Manager
-    [ObservableProperty] private GameProfileManager<MandarinGameProfile> _gameProfileManager = new();
+    [ObservableProperty]
+    public partial GameProfileManager<MandarinGameProfile> GameProfileManager { get; set; } = new();
     
     private const string GameProfileExtension = ".bin";
 
-    [ObservableProperty] private string? _gameProfileAppId;
-    [ObservableProperty] private IGamingPlatform _gamingPlatform = new Other();
+    [ObservableProperty]
+    public partial string? GameProfileAppId { get; set; }
+
+    [ObservableProperty] 
+    public partial IGamingPlatform GamingPlatform { get; set; } = new Other();
 
     private void LoadGameProfileFile(string path)
     {
@@ -207,8 +215,10 @@ public partial class MainWindowViewModel : ObservableValidator
         }
     }
     
-    [ObservableProperty] private ObservableCollection<string> _gameProfileFiles = [];
-    [ObservableProperty] private string? _selectedGameProfileFile;
+    [ObservableProperty] 
+    public partial ObservableCollection<string> GameProfileFiles { get; set; } = [];
+    [ObservableProperty] 
+    public partial string? SelectedGameProfileFile { get; set; }
 
     partial void OnSelectedGameProfileFileChanged(string? value) 
         => LoadGameProfileFile(value ?? string.Empty);
@@ -299,7 +309,8 @@ public partial class MainWindowViewModel : ObservableValidator
 
     private CancellationTokenSource _cts = new();
     private readonly Core _core;
-    [ObservableProperty] private SuperUserManager _superUserManager;
+    [ObservableProperty] 
+    public partial SuperUserManager SuperUserManager { get; set; }
     
     public MainWindowViewModel()
     {

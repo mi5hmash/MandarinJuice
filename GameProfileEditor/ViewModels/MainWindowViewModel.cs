@@ -37,13 +37,16 @@ public partial class MainWindowViewModel : ObservableObject
     #endregion
 
     #region PROGRESS_REPORTER
-    [ObservableProperty] private string _progressText = "Loading...";
+    [ObservableProperty] 
+    public partial string ProgressText { get; set; } = "Loading...";
     private readonly ProgressReporter _progressReporter;
     #endregion
 
     #region GAME_PROFILE
-    [ObservableProperty] private GameProfileManager<MandarinGameProfile> _gameProfileManager = new();
-    [ObservableProperty] private MandarinFileFlavorEnum[] _mandarinFileFlavors = Enum.GetValues<MandarinFileFlavorEnum>();
+    [ObservableProperty] 
+    public partial GameProfileManager<MandarinGameProfile> GameProfileManager { get; set; } = new();
+    [ObservableProperty] 
+    public partial MandarinFileFlavorEnum[] MandarinFileFlavors { get; set; } = Enum.GetValues<MandarinFileFlavorEnum>();
 
     private const string GameProfileExtension = ".bin";
 
@@ -162,7 +165,7 @@ public partial class MainWindowViewModel : ObservableObject
 
     #region GAMING_PLATFORM
     [ObservableProperty] 
-    private List<KeyValuePair<GamingPlatformEnum, string>> _gamingPlatformOptions = GamingPlatformRegistry.GamingPlatformsFriendlyNames
+    public partial List<KeyValuePair<GamingPlatformEnum, string>> GamingPlatformOptions { get; set; } = GamingPlatformRegistry.GamingPlatformsFriendlyNames
         .OrderBy(x => x.Value)
         .ToList();
     #endregion

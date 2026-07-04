@@ -1,4 +1,8 @@
 <Solution>
+  <Folder Name="/Solution Elements/">
+    <File Path="README.md" />
+    <File Path="LICENSE" />
+  </Folder>
   <Project Path="GameProfileEditor/GameProfileEditor.csproj" Id="36b69f4d-8f27-41bc-ae4b-f8f6a5be8271" />
   <Project Path="mandarin-juice-cli/mandarin-juice-cli.csproj" Id="c2f9a8c1-1e4b-4f7f-9d6a-3a2b6c8f4e91" />
   <Project Path="MandarinJuiceCore/MandarinJuiceCore.csproj" Id="7d3e5b42-9a6f-4c2a-8f5d-1b4e9a7c2d35" />

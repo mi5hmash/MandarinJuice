@@ -16,7 +16,8 @@ public partial class SuperUserManager : ObservableObject
     private readonly uint _superUserThreshold;
     private uint _superUserClicks;
 
-    [ObservableProperty] private bool _isSuperUser;
+    [ObservableProperty] 
+    public partial bool IsSuperUser { get; set; }
 
     public SuperUserManager(ProgressReporter progressReporter, long timeSpanMs = 500, uint superUserThreshold = 3)
     {

@@ -121,15 +121,16 @@ public sealed class MandarinJuiceCoreTests : IDisposable
         Assert.True(testResult);
     }
 
-    public static IEnumerable<object[]> DecryptFileTheories =>
-    [
-        ["V1_STEAM",Properties.Resources.profileFileSteamV1, Properties.Resources.encryptedFileSteamV1, SteamId],
-        ["V2_STEAM",Properties.Resources.profileFileSteamV2, Properties.Resources.encryptedFileSteamV2, SteamId],
-        ["V3_STEAM",Properties.Resources.profileFileSteamV3, Properties.Resources.encryptedFileSteamV3, SteamId],
-        ["V1_EPIC", Properties.Resources.profileFileEpicV1, Properties.Resources.encryptedFileEpicV1, EpicId],
-        ["V2_EPIC",Properties.Resources.profileFileEpicV2, Properties.Resources.encryptedFileEpicV2, EpicId]
-    ];
-
+    public static TheoryData<string, string, byte[], string> DecryptFileTheories =>
+        new()
+        {
+            { "V1_STEAM", Properties.Resources.profileFileSteamV1, Properties.Resources.encryptedFileSteamV1, SteamId },
+            { "V2_STEAM", Properties.Resources.profileFileSteamV2, Properties.Resources.encryptedFileSteamV2, SteamId },
+            { "V3_STEAM", Properties.Resources.profileFileSteamV3, Properties.Resources.encryptedFileSteamV3, SteamId },
+            { "V1_EPIC", Properties.Resources.profileFileEpicV1, Properties.Resources.encryptedFileEpicV1, EpicId },
+            { "V2_EPIC", Properties.Resources.profileFileEpicV2, Properties.Resources.encryptedFileEpicV2, EpicId }
+        };
+    
     [Theory]
     [MemberData(nameof(DecryptFileTheories))]
     public void DecryptFiles_DoesDecrypt(string variant, string profileData, byte[] data, string userId)
