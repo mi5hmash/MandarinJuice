@@ -63,7 +63,7 @@ public sealed class Steam : Default
         => ApplyVariant(steamId.AccountId, steamId.GetSteamId64(), ParseVariant);
 
     private ulong ParseUserIdInternal(uint id)
-        => ApplyVariant(id, id, ParseVariant);
+        => ApplyVariant(id, 0x0110000100000000 | (ulong)id, ParseVariant);
 
     private ulong ParseUserIdInternal(ulong id)
         => ApplyVariant((uint)id, id, ParseVariant);

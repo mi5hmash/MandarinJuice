@@ -468,30 +468,49 @@ public sealed class Core(SimpleLogger logger, ProgressReporter progressReporter)
         var po = GetParallelOptions(cts);
         // Bruteforce user ID
         logger.LogInfo("Brute-forcing UserID...");
-        uint lap = 0;
-        uint? uid = null;
-        var result = false;
+        const int progressChunk = 10_000_000;
+        var found = false;
+        long globalLap = 0;
+        uint uid = 0;
         try
         {
-            Parallel.For(0, uint.MaxValue, po, (ctr, loopState) =>
-            {
-                if (lap % 10_000_000 == 0)
+            Parallel.For(0, uint.MaxValue, po,
+                () => 0L,
+                (ctr, loopState, localLap) =>
                 {
-                    var progress = (double)lap / uint.MaxValue;
-                    progressReporter.Report($"[{progress:P2}] Brute-forcing: {fileName}", (int)(progress * 100));
-                }
-                var parsedUserId = gamingPlatform.ParseUserId((uint)ctr) + state;
-                var res = MandarinDeencryptor.TryParsedUserId(parsedUserId, targetMask);
-                if (res)
-                {
-                    uid = (uint)ctr;
-                    gamingPlatform.UserIdInput = ctr.ToString();
-                    loopState.Stop();
-                }
-                Interlocked.Increment(ref lap);
-            });
-            result = uid is not null;
-            logger.LogInfo(result ? $"Found UserID: {uid}." : "UserID not found.");
+                    if (found)
+                    {
+                        loopState.Stop();
+                        return localLap;
+                    }
+
+                    var userId = (uint)ctr;
+                    var parsedUserId = gamingPlatform.ParseUserId(userId) + state;
+                    if (MandarinDeencryptor.TryParsedUserId(parsedUserId, targetMask))
+                    {
+                        uid = userId;
+                        gamingPlatform.UserIdInput = userId.ToString();
+                        found = true;
+                        loopState.Stop();
+                        return localLap;
+                    }
+
+                    localLap++;
+
+                    if (localLap < progressChunk) return localLap;
+                    
+                    var added = Interlocked.Add(ref globalLap, localLap);
+                    localLap = 0;
+
+                    var progress = (double)added / uint.MaxValue;
+                    progressReporter.Report(
+                        $"[{progress:P2}] Brute-forcing: {fileName}",
+                        (int)(progress * 100));
+
+                    return localLap;
+                },
+                localLap => Interlocked.Add(ref globalLap, localLap));
+            logger.LogInfo(found ? $"Found UserID: {uid}." : "UserID not found.");
         }
         catch (OperationCanceledException ex)
         {
@@ -502,6 +521,6 @@ public sealed class Core(SimpleLogger logger, ProgressReporter progressReporter)
             progressReporter.Complete();
         }
 
-        return result;
+        return found;
     }
 }
