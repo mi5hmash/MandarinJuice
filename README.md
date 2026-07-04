@@ -2,6 +2,9 @@
 [![Release Version](https://img.shields.io/github/v/tag/mi5hmash/MandarinJuice?label=Version)](https://github.com/mi5hmash/MandarinJuice/releases/latest)
 [![Visual Studio 2026](https://custom-icon-badges.demolab.com/badge/Visual%20Studio%202026-F0ECF8.svg?&logo=visual-studio-26)](https://visualstudio.microsoft.com/)
 [![.NET10](https://img.shields.io/badge/.NET%2010-512BD4?logo=dotnet&logoColor=fff)](#)
+[![Total Downloads](https://img.shields.io/github/downloads/mi5hmash/MandarinJuice/total?style=flat&label=Downloads&color=teal)](#)
+
+
 
 > [!IMPORTANT]
 > **This software is free and open source. If someone asks you to pay for it, it's likely a scam.**
