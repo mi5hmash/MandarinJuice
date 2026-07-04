@@ -5,8 +5,8 @@ namespace MandarinJuiceCore.GamingPlatformsFactory;
 
 public static class GamingPlatformRegistry
 {
-    private static readonly Dictionary<GamingPlatformEnum, IGamingPlatform> GamingPlatforms = new();
-    public static readonly Dictionary<GamingPlatformEnum, string> GamingPlatformsFriendlyNames = new();
+    private static readonly Dictionary<GamingPlatformEnum, Type> GamingPlatforms = [];
+    public static readonly Dictionary<GamingPlatformEnum, string> GamingPlatformsFriendlyNames = [];
 
     static GamingPlatformRegistry()
     {
@@ -30,15 +30,20 @@ public static class GamingPlatformRegistry
 
         foreach (var element in elements)
         {
-            var instance = (IGamingPlatform)Activator.CreateInstance(element.Type)!;
-            if (!GamingPlatforms.TryAdd(element.Attribute!.GamingPlatformType, instance))
+            var type = element.Type;
+            if (!GamingPlatforms.TryAdd(element.Attribute!.GamingPlatformType, type))
                 throw new InvalidOperationException($"Duplicate GamingPlatform '{element.Attribute!.GamingPlatformType}' in {element.Type.FullName}");
             GamingPlatformsFriendlyNames[element.Attribute.GamingPlatformType] = element.Attribute.FriendlyName;
         }
     }
+    private static T GetOrThrow<T>(Dictionary<GamingPlatformEnum, T> dict, GamingPlatformEnum id)
+        => dict.TryGetValue(id, out var value)
+            ? value
+            : throw new NotSupportedException($"The gaming platform '{id}' is not supported.");
 
-    public static IGamingPlatform GetGamingPlatform(GamingPlatformEnum gamingPlatformType) 
-        => !GamingPlatforms.TryGetValue(gamingPlatformType, out var platform) 
-            ? throw new NotSupportedException($"The gaming platform '{gamingPlatformType}' is not supported.") 
-            : platform;
+    public static IGamingPlatform GetGamingPlatform(GamingPlatformEnum gamingPlatformType)
+    {
+        var type = GetOrThrow(GamingPlatforms, gamingPlatformType);
+        return (IGamingPlatform)Activator.CreateInstance(type)!;
+    }
 }

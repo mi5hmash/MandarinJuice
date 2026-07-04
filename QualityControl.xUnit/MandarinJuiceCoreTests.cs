@@ -188,4 +188,23 @@ public sealed class MandarinJuiceCoreTests : IDisposable
         // Assert
         Assert.True(result);
     }
+
+    [Theory]
+    [MemberData(nameof(DecryptFileTheories))]
+    public void BruteforceUserId_DoesFailWithWrongUserId(string variant, string profileData, byte[] data, string userId)
+    {
+        // Arrange
+        _output.WriteLine(variant);
+        LoadGameProfile(profileData);
+        var mandarinFile = new MandarinFile(_core.Deencryptor, MandarinFileFlavorEnum.Default);
+        mandarinFile.SetFileData(data, true);
+        mandarinFile.GetStateAndTargetMask(out var state, out var targetMask);
+
+        // Act
+        var parsedUserId = _gamingPlatform.ParseUserId(userId) + 1 + state;
+        var result = MandarinDeencryptor.TryParsedUserId(parsedUserId, targetMask);
+
+        // Assert
+        Assert.False(result);
+    }
 }
