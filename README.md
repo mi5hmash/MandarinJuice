@@ -168,3 +168,7 @@ Set the font size back to the default value, or press **`CTRL + SHIFT + J`** to 
 
 # 🔄 Alternatives  
 If you’re looking for a save editor (not just a re-signer or deencryptor), you might be interested in [ree-save-editor](https://github.com/kvasszn/ree-save-editor) by [kvasszn](https://github.com/kvasszn).
+
+## Related Resources
+
+- [MH Wilds Guides](https://mhwildsguides.xyz/) — Monster Hunter Wilds weapon tier lists, monster guides, armor builds, and skill combos.
