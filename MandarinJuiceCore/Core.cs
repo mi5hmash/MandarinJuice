@@ -137,7 +137,7 @@ public sealed class Core(SimpleLogger logger, ProgressReporter progressReporter)
                     }
                     catch (Exception ex)
                     {
-                        errorCounter.AddError($"{progressTracker}Failed to save the file: {ex}", group);
+                        errorCounter.AddError($"{progressTracker} Failed to save the file: {ex}", group);
                         break;
                     }
                     logger.LogInfo($"{progressTracker} Decrypted the [{fileName}] file.", group);
@@ -411,116 +411,98 @@ public sealed class Core(SimpleLogger logger, ProgressReporter progressReporter)
     }
 
     /// <summary>
-    /// Asynchronously attempts to discover the user ID associated with an encrypted file by performing a brute-force search using the specified gaming platform.
+    /// Asynchronously brute-forces the UserID of an encrypted file by iterating through all possible UserID values and checking if the decrypted data matches the expected format for the specified gaming platform.
     /// </summary>
-    /// <param name="inputDir">The directory path containing the files to process. Must not be null or empty.</param>
-    /// <param name="gamingPlatform">The gaming platform implementation used to parse and set the user ID during the brute-force operation. Cannot be null.</param>
+    /// <param name="inputPath">The path to the file or directory to process.</param>
+    /// <param name="gamingPlatform">The gaming platform implementation used to parse and set the user ID during the brute-force operation.</param>
     /// <param name="cts">A cancellation token source that can be used to cancel the brute-force operation.</param>
-    /// <returns><see langword="true"/> if the UserID was found; otherwise, <see langword="false"/>.</returns>
-    public async Task<bool> BruteforceUserIdAsync(string inputDir, IGamingPlatform gamingPlatform,
+    /// <returns>The UserID if found; otherwise, <see langword="null"/>.</returns>
+    public async Task<uint?> BruteforceUserIdAsync(string inputPath, IGamingPlatform gamingPlatform,
         CancellationTokenSource cts)
-        => await Task.Run(() => BruteforceUserId(inputDir, gamingPlatform, cts));
+        => await Task.Run(() => BruteforceUserId(inputPath, gamingPlatform, cts));
 
     /// <summary>
-    /// Attempts to discover the user ID associated with an encrypted file by performing a brute-force search using the specified gaming platform.
+    /// Brute-forces the UserID of an encrypted file by iterating through all possible UserID values and checking if the decrypted data matches the expected format for the specified gaming platform.
     /// </summary>
-    /// <param name="inputDir">The directory path containing the files to process. Must not be null or empty.</param>
-    /// <param name="gamingPlatform">The gaming platform implementation used to parse and set the user ID during the brute-force operation. Cannot be null.</param>
+    /// <param name="inputPath">The path to the file or directory to process.</param>
+    /// <param name="gamingPlatform">The gaming platform implementation used to parse and set the user ID during the brute-force operation.</param>
     /// <param name="cts">A cancellation token source that can be used to cancel the brute-force operation.</param>
-    /// <returns><see langword="true"/> if the UserID was found; otherwise, <see langword="false"/>.</returns>
-    public bool BruteforceUserId(string inputDir, IGamingPlatform gamingPlatform, CancellationTokenSource cts)
+    /// <returns>The UserID if found; otherwise, <see langword="null"/>.</returns>
+    public uint? BruteforceUserId(string inputPath, IGamingPlatform gamingPlatform, CancellationTokenSource cts)
     {
-        // GET FILES TO PROCESS
-        string[] filesToProcess;
-        try { filesToProcess = SaveDataFileIo.GetFiles(inputDir); }
-        catch (Exception ex)
-        {
-            logger.LogWarning(ex.Message);
-            return false;
-        }
-        // BRUTEFORCE
-        var fileName = Path.GetFileName(filesToProcess[0]);
-        // Try to read file data
+        uint? result = null;
+        // GET FILE TO PROCESS AND READ IT
+        string fileToProcess;
         byte[] data;
-        try { data = File.ReadAllBytes(filesToProcess[0]); }
+        try
+        {
+            fileToProcess = SaveDataFileIo.GetFile(inputPath);
+            data = File.ReadAllBytes(fileToProcess);
+        }
         catch (Exception ex)
         {
-            logger.LogError($"Failed to read the [{fileName}] file: {ex}");
-            return false;
+            logger.LogError(ex.Message);
+            return result;
         }
+        var fileName = Path.GetFileName(fileToProcess);
         // Process file data
         var mandarinFile = new MandarinFile(Deencryptor, MandarinFileFlavor);
         try { mandarinFile.SetFileData(data); }
         catch (Exception ex)
         {
             logger.LogError($"Failed to process the [{fileName}] file data: {ex}");
-            return false;
+            return result;
         }
         // Check if file is encrypted
         if (!mandarinFile.IsEncrypted)
         {
             logger.LogError($"File [{fileName}] is not encrypted so it there is nothing to brute-force.");
-            return false;
+            return result;
         }
+        // INITIALIZE PROGRESS TRACKER
+        var progressTracker = new ProgressTracker(100);
+        var errorCounter = new ErrorCounter(logger);
+        // BRUTE-FORCE
+        const uint step = uint.MaxValue / 100;
         // Get state and target mask
-        mandarinFile.GetStateAndTargetMask(out var state, out var targetMask);
+        mandarinFile.GetStateAndTargetMask(out var mandarinState, out var targetMask);
         // Setup parallel options
         var po = GetParallelOptions(cts);
-        // Bruteforce user ID
-        logger.LogInfo("Brute-forcing UserID...");
-        const int progressChunk = 10_000_000;
-        var found = false;
-        long globalLap = 0;
-        uint uid = 0;
+        // Brute-force data in parallel
         try
         {
-            Parallel.For(0, uint.MaxValue, po,
-                () => 0L,
-                (ctr, loopState, localLap) =>
+            Parallel.For(0, uint.MaxValue, po, (ctr, state) =>
+            {
+                while (true)
                 {
-                    if (found)
+                    if (ctr % step == 0)
                     {
-                        loopState.Stop();
-                        return localLap;
+                        progressReporter.Report($"{progressTracker} Brute-forcing UserID of {fileName}...", progressTracker.Percentage);
+                        progressTracker.Increment();
                     }
-
                     var userId = (uint)ctr;
-                    var parsedUserId = gamingPlatform.ParseUserId(userId) + state;
-                    if (MandarinDeencryptor.TryParsedUserId(parsedUserId, targetMask))
-                    {
-                        uid = userId;
-                        gamingPlatform.UserIdInput = userId.ToString();
-                        found = true;
-                        loopState.Stop();
-                        return localLap;
-                    }
-
-                    localLap++;
-
-                    if (localLap < progressChunk) return localLap;
-                    
-                    var added = Interlocked.Add(ref globalLap, localLap);
-                    localLap = 0;
-
-                    var progress = (double)added / uint.MaxValue;
-                    progressReporter.Report(
-                        $"[{progress:P2}] Brute-forcing: {fileName}",
-                        (int)(progress * 100));
-
-                    return localLap;
-                },
-                localLap => Interlocked.Add(ref globalLap, localLap));
-            logger.LogInfo(found ? $"Found UserID: {uid}." : "UserID not found.");
+                    var parsedUserId = gamingPlatform.ParseUserId(userId) + mandarinState;
+                    if (!MandarinDeencryptor.TryParsedUserId(parsedUserId, targetMask)) break;
+                    gamingPlatform.UserIdInput = userId.ToString();
+                    result = userId;
+                    state.Stop();
+                    break;
+                }
+            });
+            if (result is null) 
+                throw new Exception("UserID not found.");
+            
+            logger.LogInfo($"Found UserID: {result}.");
         }
         catch (OperationCanceledException ex)
         {
-            logger.LogWarning(ex.Message);
+            errorCounter.AddWarning(ex.Message);
         }
         finally
         {
             progressReporter.Complete();
         }
 
-        return found;
+        return result;
     }
 }

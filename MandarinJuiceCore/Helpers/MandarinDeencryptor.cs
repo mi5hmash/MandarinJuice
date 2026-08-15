@@ -480,9 +480,16 @@ public sealed class MandarinDeencryptor(ulong mandarinSeed = 0)
         for (var i = 0; i < data.Length; i++)
         {
             state = Sse2.Xor(state, aesRoundKeys[0]);
-            for (var y = 1; y < rounds; y++)
-                state = Aes.Encrypt(state, aesRoundKeys[y]);
-            state = Aes.EncryptLast(state, aesRoundKeys[rounds]);
+            state = Aes.Encrypt(state, aesRoundKeys[1]);
+            state = Aes.Encrypt(state, aesRoundKeys[2]);
+            state = Aes.Encrypt(state, aesRoundKeys[3]);
+            state = Aes.Encrypt(state, aesRoundKeys[4]);
+            state = Aes.Encrypt(state, aesRoundKeys[5]);
+            state = Aes.Encrypt(state, aesRoundKeys[6]);
+            state = Aes.Encrypt(state, aesRoundKeys[7]);
+            state = Aes.Encrypt(state, aesRoundKeys[8]);
+            state = Aes.Encrypt(state, aesRoundKeys[9]);
+            state = Aes.EncryptLast(state, aesRoundKeys[10]);
             // Decrypt row of input data
             data[i] = Sse2.Xor(data[i], state);
         }

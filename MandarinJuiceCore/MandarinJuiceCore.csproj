@@ -20,7 +20,7 @@
 		<PackageReference Include="Mi5hmasH.GameLaunchers" Version="0.0.1" />
 		<PackageReference Include="Mi5hmasH.GameProfile" Version="0.0.2" />
 		<PackageReference Include="Mi5hmasH.Logger" Version="3.0.2" />
-		<PackageReference Include="Mi5hmasH.Progress" Version="0.0.2" />
+		<PackageReference Include="Mi5hmasH.Progress" Version="0.0.3" />
 	</ItemGroup>
 
 </Project>

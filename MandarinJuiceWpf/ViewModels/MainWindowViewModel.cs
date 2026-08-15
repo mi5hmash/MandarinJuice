@@ -414,7 +414,7 @@ public partial class MainWindowViewModel : ObservableValidator
         IsAbortAllowed = true;
         _cts = new CancellationTokenSource();
         var result = await _core.BruteforceUserIdAsync(InputFolderPath, GamingPlatform, _cts);
-        if (result) UserIdInput = GamingPlatform.UserIdInput;
+        if (result is not null) UserIdInput = GamingPlatform.UserIdInput;
         SystemSounds.Beep.Play();
         _cts.Dispose();
         IsAbortAllowed = false;

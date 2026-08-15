@@ -3,6 +3,7 @@ using Mi5hmasH.WpfHelper.ControlProperties;
 using System.Windows;
 using System.Windows.Interop;
 using Mi5hmasH.WpfHelper;
+using Mi5hmasH.WpfHelper.Helpers;
 
 namespace GameProfileEditor.Views.Windows;
 
@@ -25,9 +26,7 @@ public partial class MainWindow
     {
         base.OnSourceInitialized(e);
         // WINDOWS_10_DARK_THEME_FIX
-        if (!DarkModeWin10Helper.IsWindows10GreaterThan1809()) return;
-        var hwnd = new WindowInteropHelper(this).Handle;
-        DarkModeWin10Helper.FixImmersiveDarkMode(hwnd);
+        this.FixImmersiveDarkMode();
     }
 
     #region FILE_DROP

@@ -24,7 +24,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Mi5hmasH.ConsoleHelper" Version="0.0.1" />
+		<PackageReference Include="Mi5hmasH.ConsoleHelper" Version="0.0.2" />
 	</ItemGroup>
 
 	<ItemGroup>
